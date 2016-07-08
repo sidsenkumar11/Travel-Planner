@@ -30,9 +30,10 @@ CREATE TABLE IF NOT EXISTS hours (
 
 );
 
-DROP TABLE IF EXISTS 'time';
+DROP TABLE IF EXISTS 'timerange';
 CREATE TABLE IF NOT EXISTS time (
 
+	timerange
 );
 
 ----------------------------
@@ -61,12 +62,11 @@ CREATE TABLE IF NOT EXISTS review (
 
 	-- 1 user WRITES N reviews
 	username VARCHAR(30) NOT NULL, -- This is also the author of the review
-
-	-- IS_ABOUT relationship with attraction table
-	attraction_name VARCHAR(100),
-
-	FOREIGN KEY (attraction_name) REFERENCES attraction(attraction_name),
 	FOREIGN KEY (username) REFERENCES user(username)
+
+	-- N reviews IS_ABOUT 1 attraction
+	attraction_name VARCHAR(100),
+	FOREIGN KEY (attraction_name) REFERENCES attraction(attraction_name),
 );
 
 DROP TABLE IF EXISTS 'creditcard';
@@ -88,13 +88,29 @@ CREATE TABLE IF NOT EXISTS creditcard (
 	firstname VARCHAR(35),
 	lastname VARCHAR(35),
 
-	-- HAS relationship with user table
+	-- 1 user HAS N creditcard
 	username VARCHAR(30) NOT NULL,
-
 	FOREIGN KEY (username) REFERENCES user(username)
 		ON DELETE CASCADE,
 
 	PRIMARY KEY(card_number, firstname, lastname)
+);
+
+DROP TABLE IF EXISTS 'trip';
+CREATE TABLE IF NOT EXISTS trip (
+
+	trip_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	booked BOOLEAN NOT NULL,
+	start_date DATE NOT NULL,
+	end_date DATE NOT NULL,
+	total_cost DOUBLE NOT NULL, -- TODO: How do you calculate derived attributes?
+
+	-- 1 creditcard PAYS N trip
+	card_number CHAR(16),
+	firstname VARCHAR(35),
+	lastname VARCHAR(35),
+	FOREIGN KEY(card_number, firstname, lastname) REFERENCES creditcard(card_number, firstname, lastname)
+
 );
 
 DROP TABLE IF EXISTS 'activity';
@@ -104,25 +120,24 @@ CREATE TABLE IF NOT EXISTS activity (
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
 	activity_date DATE NOT NULL,
-);
 
-DROP TABLE IF EXISTS 'trip';
-CREATE TABLE IF NOT EXISTS trip (
-
-	trip_id INTEGER PRIMARY KEY AUTOINCREMENT,
-	booked BOOLEAN NOT NULL,
-	start_date DATE NOT NULL,
-	end_date DATE NOT NULL
+	-- 1 trip CONSISTS_OF N activity
+	trip_id INTEGER,
+	FOREIGN KEY(trip_id) REFERENCES trip(trip_id)
 );
 
 DROP TABLE IF EXISTS 'attraction';
 CREATE TABLE IF NOT EXISTS attraction (
 
-	-- Billing Address
-	address_no INTEGER,
-	address_street VARCHAR(50),
-	address_city VARCHAR(50),
-	address_state VARCHAR(20),
-	address_zip VARCHAR(10),
+	attraction_name VARCHAR(100) PRIMARY KEY,
+	description TEXT, -- Not all attractions need a description, so no NOT NULL
+	nearest_transport TEXT, -- Assumes this is stored as a string (e.g. Gare du Nord)
+
+	-- Address
+	streetno INTEGER,
+	street VARCHAR(50),
+	city VARCHAR(50),
+	state VARCHAR(20),
+	zip VARCHAR(10),
 
 );
