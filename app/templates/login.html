@@ -1,128 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Login form using Material Design - Demo by W3lessons</title>
-  <!-- CORE CSS-->
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
 
-<style type="text/css">
-html,
-body {
-    height: 100%;
-}
-html {
-    display: table;
-    margin: auto;
-}
-body {
-    display: table-cell;
-    vertical-align: middle;
-}
-.margin {
-  margin: 0 !important;
-}
-</style>
-  
-</head>
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Travel Planner">
+    <meta name="author" content="Siddarth Senthilkumar">
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<body class="red">
+        <!--Import Google Icon Font-->
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="static/css/materialize.min.css"  media="screen,projection"/>
+
+        <link type="text/css" rel="stylesheet" href="static/css/style.css"/>
+      <title>Login/Register</title>
+  </head>
 
 
-  <div id="login-page" class="row">
-    <div class="col s12 z-depth-6 card-panel">
-      <form class="login-form">
+  <body class="blue-grey darken-3 white-text">
+    <div class="container">
         <div class="row">
-          <div class="input-field col s12 center">
-            <img src="http://w3lessons.info/logo.png" alt="" class="responsive-img valign profile-image-login">
-            <p class="center login-form-text">W3lessons - Material Design Login Form</p>
-          </div>
-        </div>
-        <div class="row margin">
-          <div class="input-field col s12">
-            <i class="mdi-social-person-outline prefix"></i>
-            <input class="validate" id="email" type="email">
-            <label for="email" data-error="wrong" data-success="right" class="center-align">Email</label>
-          </div>
-        </div>
-        <div class="row margin">
-          <div class="input-field col s12">
-            <i class="mdi-action-lock-outline prefix"></i>
-            <input id="password" type="password">
-            <label for="password">Password</label>
-          </div>
-        </div>
-        <div class="row">          
-          <div class="input-field col s12 m12 l12  login-text">
-              <input type="checkbox" id="remember-me" />
-              <label for="remember-me">Remember me</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <a href="login.html" class="btn waves-effect waves-light col s12">Login</a>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s6 m6 l6">
-            <p class="margin medium-small"><a href="register.html">Register Now!</a></p>
-          </div>
-          <div class="input-field col s6 m6 l6">
-              <p class="margin right-align medium-small"><a href="forgot-password.html">Forgot password?</a></p>
-          </div>          
-        </div>
-
-      </form>
-    </div>
-  </div>
-
-
-  <center>
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Post Page - Responsive -->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:300px;height:250px"
-     data-ad-client="ca-pub-5104998679826243"
-     data-ad-slot="3470684978"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</center>
-
-
-
-  <!-- ================================================
-    Scripts
-    ================================================ -->
-
-  <!-- jQuery Library -->
- <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  <!--materialize js-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
-
-  <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-27820211-3', 'auto');
-  ga('send', 'pageview');
-
-</script><script src="//load.sumome.com/" data-sumo-site-id="1cf2c3d548b156a57050bff06ee37284c67d0884b086bebd8e957ca1c34e99a1" async="async"></script>
-
-
-   <footer class="page-footer">
-          <div class="footer-copyright">
-            <div class="container">
-            © 2015 W3lessons.info
-            <a class="grey-text text-lighten-4 right" href="http://w3lessons.info">Karthikeyan K</a>
+            <div class="col m6">
+                <br /><br /><br /><br />
+                <img class="fullscreen responsive-img" src="static/images/login.jpg">
+                <h5 class="center-align">You don't want to miss this</h5>
             </div>
-          </div>
-  </footer>
-</body>
+            <div class="col m6">
+                <br /><br /><br />
+                <h3>Login</h3>
+                <form method="post" action="/login">
+                    <div class="row">
+                            <div class="col s6">
+                                <div class="input-field">
+                                    <input name="login_username" type="text" class="validate">
+                                    <label for="login_username">Username</label>
+                                </div>
+                                <div class="input-field">
+                                    <input name="login_password" type="password" class="validate">
+                                    <label for="login_password">Password</label>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m12 l12">
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Submit<i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><hr />
+        <div class="row">
+            <h3>Register</h3>
+            <p>Don't have an account? No sweat.</p>
+            <form class="col s12" method="post" action="/register">
+                <div class="row">
+                        <h5>General Information</h5>
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input placeholder="Username" name="register_username" type="text" class="validate">
+                                <label for="register_username">Username</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <input placeholder="Password" name="register_password" type="password" class="validate">
+                                <label for="register_password">Password</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input placeholder="First Name" name="register_firstname" type="text" class="validate">
+                                <label for="register_firstname">First Name</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <input placeholder="Last Name" name="register_lastname" type="text" class="validate">
+                                <label for="register_lastname">Last Name</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input placeholder="Email Address" name="register_email" type="text" class="validate">
+                                <label for="register_email">Email Address</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h5>Address Information</h5>
+                            <div class="input-field col s6">
+                                <input placeholder="Street Address" name="register_streetaddress" type="text" class="validate">
+                                <label for="register_streetaddress">Street Address</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <input placeholder="City" name="register_city" type="text" class="validate">
+                                <label for="register_city">City</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <input placeholder="State" name="register_state" type="text" class="validate">
+                                <label for="register_state">State</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <input placeholder="Zip" name="register_zip" type="text" class="validate">
+                                <label for="register_zip">Zip Code</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s12 m12 l12 center-align">
+                                <button class="btn waves-effect waves-light" type="submit" name="action">Submit<i class="material-icons right">send</i>
+                                </button>
+                            </div>
+                        </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="static/js/materialize.min.js"></script>
+    <script type="text/javascript" src="static/js/init.js"></script>
+  </body>
 </html>

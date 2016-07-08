@@ -1,155 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
-  <title>CS 4400 | Travel Planner</title>
 
-  <!-- CSS  -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="/static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="/static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-</head>
-<body>
-  <nav class="white" role="navigation">
-    <div class="nav-wrapper container">
-      <a id="logo-container" href="#" class="brand-logo">CS 4400</a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="login.html">Login</a></li>
-      </ul>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="Travel Planner">
+        <meta name="author" content="Siddarth Senthilkumar">
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-      <ul id="nav-mobile" class="side-nav">
-        <li><a href="login.html">Login</a></li>
-      </ul>
-      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-    </div>
-  </nav>
+        <!--Import Google Icon Font-->
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="static/css/materialize.min.css"  media="screen,projection"/>
 
-  <div id="index-banner" class="parallax-container">
-    <div class="section no-pad-bot">
-      <div class="container">
-        <br><br>
-        <h1 class="header center teal-text text-lighten-2">Easy Planner</h1>
-        <div class="row center">
-          <h5 class="header col s12 light">The easiest way to book your perfect vacation</h5>
-        </div>
-        <div class="row center">
-          <a href="register.html" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
-        </div>
-        <br><br>
+        <link type="text/css" rel="stylesheet" href="static/css/style.css"/>
+        <title>Travel Planner</title>
+    </head>
 
-      </div>
-    </div>
-    <div class="parallax"><img src="/static/background1.jpg" alt="Unsplashed background img 1"></div>
-  </div>
-
-
-  <div class="container">
-    <div class="section">
-
-      <!--   Icon Section   -->
-      <div class="row">
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center brown-text"><i class="material-icons">flash_on</i></h2>
-            <h5 class="center">Speed up your Booking</h5>
-
-            <p class="light">...So you spend your time relaxing instead of planning. We'll get you travel plans faster than anyone else so you'll never lose a spot in reservations again.</p>
-          </div>
+    <body>
+        <div class="slider fullscreen">
+            <ul class="slides">
+                <li>
+                    <img src="static/images/uk.jpg">
+                    <div class="caption center-align">
+                        <h1>Travel Planner</h1>
+                        <h5>Welcome to your one stop shop for all things traveling.</h5>
+                        <a class="waves-effect waves-light btn" href="login.html">Login/Register</a>
+                    </div>
+                </li>
+                <li>
+                    <img src="static/images/paris.jpg">
+                    <div class="caption left-align">
+                        <h3>Simple.</h3>
+                        <h5>Easy to use interface so you can spend more time on the important stuff.</h5>
+                        <a class="waves-effect waves-light btn" href="login.html">Login/Register</a>
+                    </div>
+                </li>
+                <li>
+                    <img src="static/images/mountain.jpg">
+                    <div class="caption right-align">
+                        <h3>Explore.</h3>
+                        <h5 class="light grey-text text-lighten-3">Enjoy thrilling adventures throughout Europe.</h5>
+                        <a class="waves-effect waves-light btn" href="login.html">Login/Register</a>
+                    </div>
+                </li>
+                <li>
+                    <img src="static/images/waterside.jpg">
+                    <div class="caption center-align">
+                        <h3>Relaxing</h3>
+                        <h5 class="light grey-text text-lighten-3">There's a little something for everyone.</h5>
+                        <a class="waves-effect waves-light btn" href="login.html">Login/Register</a>
+                    </div>
+                </li>
+            </ul>
         </div>
 
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center brown-text"><i class="material-icons">group</i></h2>
-            <h5 class="center">Personalized for You</h5>
-
-            <p class="light">Build your own experience as you travel, unique to you. Save your travel plans and view them later at any time.</p>
-          </div>
-        </div>
-
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center brown-text"><i class="material-icons">settings</i></h2>
-            <h5 class="center">Easy to work with</h5>
-
-            <p class="light">We've made our interface one of the easiest to work with on the market. Rest assured that you're in good hands with us.</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="parallax-container valign-wrapper">
-    <div class="section no-pad-bot">
-      <div class="container">
-        <div class="row center">
-          <h5 class="header col s12 light">Set yourself adrift and enjoy the finest of Europe</h5>
-        </div>
-      </div>
-    </div>
-    <div class="parallax"><img src="/static/background2.jpg" alt="Unsplashed background img 2"></div>
-  </div>
-
-  <div class="container">
-    <div class="section">
-
-      <div class="row">
-        <div class="col s12 center">
-          <h3><i class="mdi-content-send brown-text"></i></h3>
-          <h4>Contact Us</h4>
-          <p class="left-align light">Your satisfaction is our highest priority. If for whatever reason you are unsatisfied with our services, or you just want to leave us a friendly comment, please let us know by contacting us using one of the links at the bottom of the page.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="parallax-container valign-wrapper">
-    <div class="section no-pad-bot">
-      <div class="container">
-        <div class="row center">
-          <h5 class="header col s12 light"></h5>
-        </div>
-      </div>
-    </div>
-    <div class="parallax"><img src="/static/background3.jpg" alt="Unsplashed background img 3"></div>
-  </div>
-
-  <footer class="page-footer teal">
-    <div class="container">
-      <div class="row">
-        <div class="col l6 s12">
-          <h5 class="white-text">Company Bio</h5>
-          <p class="grey-text text-lighten-4">We are a team of college students working on this project for our Intro to Databases class.</p>
-
-
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Connect</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="footer-copyright">
-      <div class="container">
-      Made with <a class="brown-text text-lighten-3" href="http://materializecss.com">Materialize</a>
-      </div>
-    </div>
-  </footer>
-
-
-  <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="/static/js/materialize.js"></script>
-  <script src="/static/js/init.js"></script>
-
-  </body>
+        <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="static/js/materialize.min.js"></script>
+        <script type="text/javascript" src="static/js/init.js"></script>
+    </body>
 </html>
