@@ -148,14 +148,18 @@ CREATE TABLE IF NOT EXISTS trip (
 DROP TABLE IF EXISTS 'activity';
 CREATE TABLE IF NOT EXISTS activity (
 
-	name VARCHAR(100) PRIMARY KEY,
+	activity_name VARCHAR(100) PRIMARY KEY,
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
 	activity_date DATE NOT NULL,
+	attraction_name VARCHAR(100),
 
 	-- 1 trip CONSISTS_OF N activity
 	trip_id INTEGER,
 	FOREIGN KEY(trip_id) REFERENCES trip(trip_id)
+		ON DELETE CASCADE,
+		ON UPDATE CASCADE,
+	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name),
 		ON DELETE CASCADE,
 		ON UPDATE CASCADE
 );
@@ -187,7 +191,7 @@ CREATE TABLE IF NOT EXISTS schedule(
 
 	FOREIGN KEY username REFERENCES user(username),
 		ON DELETE CASCADE,
-	FOREIGN KEY activity_name REFERENCES activity(name),
+	FOREIGN KEY activity_name REFERENCES activity(activity_name),
 		ON DELETE CASCADE,
 		ON UPDATE CASCADE,
 	PRIMARY KEY(username, activity_name)
