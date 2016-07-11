@@ -30,6 +30,8 @@ CREATE TABLE IF EXISTS 'price'(
 	-- Price is a multivalued attribute for PAID_ATTRACTION
 	attraction_name VARCHAR(100),
 	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name),
+		ON DELETE CASCADE,
+		ON UPDATE CASCADE,
 	PRIMARY KEY(attraction_name, price)
 );
 
@@ -38,6 +40,8 @@ CREATE TABLE IF NOT EXISTS hour (
 
 	attraction_name VARCHAR(100),
 	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name)
+		ON DELETE CASCADE,
+		ON UPDATE CASCADE,
 
 	start_time TIME,
 	end_time TIME,
@@ -50,7 +54,9 @@ CREATE TABLE IF NOT EXISTS timeslot (
 
 	attraction_name VARCHAR(100),
 	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name),
-	
+		ON DELETE CASCADE,
+		ON UPDATE CASCADE,
+
 	start_time TIME,
 	end_time TIME,
 	num_people INTEGER,
@@ -84,11 +90,14 @@ CREATE TABLE IF NOT EXISTS review (
 
 	-- 1 user WRITES N reviews
 	username VARCHAR(30) NOT NULL, -- This is also the author of the review
-	FOREIGN KEY (username) REFERENCES user(username)
+	FOREIGN KEY (username) REFERENCES user(username),
+		ON DELETE CASCADE,
 
 	-- N reviews IS_ABOUT 1 attraction
 	attraction_name VARCHAR(100),
 	FOREIGN KEY (attraction_name) REFERENCES attraction(attraction_name),
+		ON DELETE CASCADE,
+		ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS 'creditcard';
@@ -132,7 +141,8 @@ CREATE TABLE IF NOT EXISTS trip (
 	firstname VARCHAR(35),
 	lastname VARCHAR(35),
 	FOREIGN KEY(card_number, firstname, lastname) REFERENCES creditcard(card_number, firstname, lastname)
-
+		ON DELETE CASCADE,
+		ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS 'activity';
@@ -146,6 +156,8 @@ CREATE TABLE IF NOT EXISTS activity (
 	-- 1 trip CONSISTS_OF N activity
 	trip_id INTEGER,
 	FOREIGN KEY(trip_id) REFERENCES trip(trip_id)
+		ON DELETE CASCADE,
+		ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS 'attraction';
@@ -174,6 +186,9 @@ CREATE TABLE IF NOT EXISTS schedule(
 	activity_name VARCHAR(100),
 
 	FOREIGN KEY username REFERENCES user(username),
+		ON DELETE CASCADE,
 	FOREIGN KEY activity_name REFERENCES activity(name),
+		ON DELETE CASCADE,
+		ON UPDATE CASCADE,
 	PRIMARY KEY(username, activity_name)
 );
