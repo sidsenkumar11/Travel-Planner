@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS timeslot (
 	start_time TIME,
 	end_time TIME,
 	num_people INTEGER,
+	reservation_ID INTEGER AUTOINCREMENT,
 
 	PRIMARY KEY(attraction_name, start_time, end_time, num_people)
 );
