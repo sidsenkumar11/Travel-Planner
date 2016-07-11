@@ -22,18 +22,40 @@ CREATE TABLE IF NOT EXISTS address (
 	PRIMARY KEY(username, no, street, city, state, zip)
 );
 
-DROP TABLE IF EXISTS 'hours';
-CREATE TABLE IF NOT EXISTS hours (
+DROP TABLE IF EXISTS 'price';
+CREATE TABLE IF EXISTS 'price'(
 
+	price DOUBLE,
+
+	-- Price is a multivalued attribute for PAID_ATTRACTION
 	attraction_name VARCHAR(100),
-
-
+	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name),
+	PRIMARY KEY(attraction_name, price)
 );
 
-DROP TABLE IF EXISTS 'timerange';
-CREATE TABLE IF NOT EXISTS time (
+DROP TABLE IF EXISTS 'hour';
+CREATE TABLE IF NOT EXISTS hour (
 
-	timerange
+	attraction_name VARCHAR(100),
+	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name)
+
+	start_time TIME,
+	end_time TIME,
+	day VARCHAR(10),
+	PRIMARY KEY(attraction_name, start_time, end_time, day)
+);
+
+DROP TABLE IF EXISTS 'timeslot';
+CREATE TABLE IF NOT EXISTS timeslot (
+
+	attraction_name VARCHAR(100),
+	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name),
+	
+	start_time TIME,
+	end_time TIME,
+	num_people INTEGER,
+
+	PRIMARY KEY(attraction_name, start_time, end_time, num_people)
 );
 
 ----------------------------
@@ -140,4 +162,18 @@ CREATE TABLE IF NOT EXISTS attraction (
 	state VARCHAR(20),
 	zip VARCHAR(10),
 
+);
+
+----------------------------
+-- M:N RELATIONSHIPS --
+----------------------------
+
+DROP TABLE IF EXISTS 'schedule';
+CREATE TABLE IF NOT EXISTS schedule(
+	username VARCHAR(30),
+	activity_name VARCHAR(100),
+
+	FOREIGN KEY username REFERENCES user(username),
+	FOREIGN KEY activity_name REFERENCES activity(name),
+	PRIMARY KEY(username, activity_name)
 );
