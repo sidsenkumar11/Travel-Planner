@@ -8,7 +8,8 @@ A web application that allows users to create travel itineraries for their vacat
 3. Open up any web browser on the same machine and go to the address `localhost:5000`.
 
 ### Note:
-To use the database functionality, before you run the application for the first time, you will need to do the following.<br />
+To use the database functionality, before you run the application for the first time, you will need to do the following.
+
 1. Type `mysql -u root -p < team1-schema.sql` into your terminal.
 2. Enter your mysql password.
 3. Type `use team1` into the mysql shell.
