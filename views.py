@@ -23,8 +23,10 @@ def verify_credentials():
 	rows = cursor.fetchall()
 	error = None
 	if rows:
-		session['username'] = rows[0][0]	
-		return render_template(redirect(url_for('home')))
+		session['username'] = rows[0][0]
+		session['email'] = rows[0][2]
+		session['name'] = rows[0][4]	
+		return redirect(url_for('home'))
 	else:
 		error = 'Incorrect username or password. Please try again.'
 	return render_template('login.html', error=error)
@@ -57,7 +59,21 @@ def register():
 	cursor.execute("insert into user (username, password, email, is_admin, first_name, last_name, address_id) values ('"
 	+ name + "', '" + password + "', '" + email + "', false, '" + firstname + "', '" + lastname + "', 1);")
 	db.commit()
-	return name + " " + password + " " + firstname + " " + lastname + " " + email + " " + street_no + " " + street + " " + city + " " + state + " " + zipcode
+
+	session['username'] = name
+	session['name'] = firstname
+	return redirect(url_for('home'))
+
+@app.route('/home')
+def home():
+	if session['username'] is '':
+		return redirect(url_for('index'))
+	return render_template("home.html", username=session['username'], name=session['name'])
+
+@app.route('/logout')
+def logout():
+	session['username'] = ''
+	return redirect(url_for('index'))
 
 if __name__ == '__main__':
 	dbname = 'team1'
