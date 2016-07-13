@@ -1,26 +1,19 @@
 # Travel-Planner
 
-CS 4400 - Intro to Database Systems
-Project Members
-- Siddarth Senthilkumar
-- Varun Ballari
-- Siddhi Shah
-- Vooha Vellanki
-- Soham
-
-## Note:
-To use the database functionality, before you run the application for the first time, you will need to do the following.
-
-1. Click "Clone and Download" on the top right corner of the page (green button).
-2. Type `mysql -u root -p < team1-schema.sql` into your terminal.
-3. Enter your mysql password.
-4. Type `use team1` into the mysql shell.
-5. Exit the mysql shell.
+A web application that allows users to create travel itineraries for their vacations.
 
 ## To run application:
 1. Open up terminal and change directory (cd) until your current working directory is the directory containing "views.py".
 2. Type `python views.py` and hit enter.
 3. Open up any web browser on the same machine and go to the address `localhost:5000`.
+
+### Note:
+To use the database functionality, before you run the application for the first time, you will need to do the following.
+
+1. Type `mysql -u root -p < team1-schema.sql` into your terminal.
+2. Enter your mysql password.
+3. Type `use team1` into the mysql shell.
+4. Exit the mysql shell.
 
 ## Functionality
 <b>Home Page</b><br />
