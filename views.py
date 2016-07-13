@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for
 import hashlib
 import pymysql
 
@@ -19,14 +19,12 @@ def verify_credentials():
 	name=request.form['login_username']
 	password=hashlib.sha256(request.form['login_password'].encode('utf-8')).hexdigest()
 	cursor = db.cursor()
-	cursor.execute("select * from user where username = " + name + " and password = " + password)
+	cursor.execute("select * from user where username = '" + name + "' and password = '" + password + "';")
 	rows = cursor.fetchall()
 	if rows:
-		print(rows)
-		return redirect(url_for('home'))
+		return str(rows)
 	else:
-		flash('Incorrect username or password, please try again.')
-		return redirect(url_for('index'))
+		return "Incorrect username or password entered!"
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -41,7 +39,22 @@ def register():
 	state=request.form['register_state']
 	zipcode=request.form['register_zip']
 
-	return name + " " + password + " " + firstname + " " + lastname + " " + email + " "+ street + " " + city + " " + state + " " + zipcode
+	street_no = -1
+	# Parse street_no from street
+	if street.split(" ")[0].isdigit():
+		street_no = street.split(" ")[0]
+		street = street[street.index(" ") + 1:]
+
+	street_no = str(street_no)
+	cursor = db.cursor()
+	cursor.execute("insert into address (street_no, street_name, city, state, zip) values ("
+			+ street_no + ", '" + street + "', '" + city + "', '" + state + "', '" + zipcode + "');")
+	db.commit()
+
+	cursor.execute("insert into user (username, password, email, is_admin, first_name, last_name, address_id) values ('"
+	+ name + "', '" + password + "', '" + email + "', false, '" + firstname + "', '" + lastname + "', 1);")
+	db.commit()
+	return name + " " + password + " " + firstname + " " + lastname + " " + email + " " + street_no + " " + street + " " + city + " " + state + " " + zipcode
 
 if __name__ == '__main__':
 	dbname = 'team1'
