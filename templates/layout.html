@@ -1,9 +1,65 @@
-{% with messages = get_flashed_messages() %}
-	{% if messages %}
-		<ul class=flashes>
-			{% for message in messages %}
-				<li>{{ message }}</li>
-			{% endfor %}
-		</ul>
-	{% endif %}
-{% endwith %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Travel Planner">
+    <meta name="author" content="Siddarth Senthilkumar">
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <!--Import Google Icon Font-->
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="static/css/materialize.min.css"  media="screen,projection"/>
+
+        <link type="text/css" rel="stylesheet" href="static/css/style.css"/>
+        <link type="text/css" rel="stylesheet" href="static/css/custom.css"/>
+      <title>{% block title %}{% endblock %}</title>
+  </head>
+
+  <body>
+    <main>
+        <!-- Navigation bar -->
+        <nav>
+            <div class="nav-wrapper grey darken-4">
+                <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+                <ul class="left hide-on-med-and-down nav-bar">
+                    <li><a href="index.html" class="active">Sample Link 1</a></li>
+                    <li><a href="projects.html">Sample Link 2</a></li>
+                    <li><a href="courses.html">Sample Link 3</a></li>
+                </ul>
+                <ul class="right hide-on-med-and-down nav-bar">
+                    <li><a href="logout.html">Log Out</a></li>
+                </ul>
+                <ul class="side-nav nav-bar grey darken-4" id="mobile-demo">
+                    <li><a href="index.html" class="active" style="font-color: white color: ">Sample Link 1</a></li>
+                    <li><a href="index.html">Sample Link 2</a></li>
+                    <li><a href="index.html">Sample Link 3</a></li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Page Body -->
+        <div class="container">
+            <div class="right-align">
+                <p>
+                    {{session['username']}}
+                </p>
+            </div>
+            {% for message in get_flashed_messages() %}
+                <div class="alert alert-warning">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="static/js/materialize.min.js"></script>
+    <script type="text/javascript" src="static/js/init.js"></script>
+  </body>
+</html>

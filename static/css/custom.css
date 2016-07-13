@@ -1,0 +1,23 @@
+/* For sticky footer */
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+/* Navigation Bar */
+ul.nav-bar li a:hover {
+    background-color: #4CAF50;
+}
+
+.active {
+    background-color: #4CAF50;
+}
+
+ul.nav-bar li a {
+	color: white;
+}
