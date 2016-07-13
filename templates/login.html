@@ -49,6 +49,9 @@
                         </div>
                     </div>
                 </form>
+		{% if error %}
+			<p class=error style="color:red"> {{ error }} </p>
+		{% endif %}
             </div>
         </div>
         <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><hr />

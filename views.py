@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, flash, render_template, request, redirect, url_for
 import hashlib
 import pymysql
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8ffe05624dfe0efdf7c7f67288d4f4ce5005e0dfb6a1bc48366ef9906dd0586e'
+username = ''
 
 @app.route('/')
 @app.route('/index')
@@ -21,10 +22,13 @@ def verify_credentials():
 	cursor = db.cursor()
 	cursor.execute("select * from user where username = '" + name + "' and password = '" + password + "';")
 	rows = cursor.fetchall()
+	error = None
 	if rows:
-		return str(rows)
+		username = rows[0][0]	
+		return render_template(redirect(url_for('home')))
 	else:
-		return "Incorrect username or password entered!"
+		error = 'Incorrect username or password. Please try again.'
+	return render_template('login.html', error=error)
 
 @app.route('/register', methods=['POST'])
 def register():
