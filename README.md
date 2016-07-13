@@ -1,13 +1,5 @@
 # Travel-Planner
 
-CS 4400 - Intro to Database Systems
-Project Members
-- Siddarth Senthilkumar
-- Varun Ballari
-- Siddhi Shah
-- Vooha Vellanki
-- Soham
-
 ## Note:
 To use the database functionality, before you run the application for the first time, you will need to do the following.
 
