@@ -8,7 +8,8 @@ Project Members
 - Vooha Vellanki
 - Soham
 
-Note: To use the database functionality, before you run the application for the first time, you will need to do the following.
+## Note:
+To use the database functionality, before you run the application for the first time, you will need to do the following.
 1. Click "Clone and Download" on the top right corner of the page (green button).
 2. Type `mysql -u root -p < team1-schema.sql` into your terminal.
 3. Enter your mysql password.
