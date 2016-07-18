@@ -75,6 +75,20 @@ def logout():
 	session['username'] = ''
 	return redirect(url_for('index'))
 
+@app.route('/trip.html')
+def trip():
+	return render_template('trip.html')
+
+@app.route('/attractions.html')
+def attractions():
+	return render_template('attractions.html')
+
+@app.route('/review.html')
+def reviews():
+	return render_template('review.html')
+
+
+
 if __name__ == '__main__':
 	dbname = 'team1'
 	db = pymysql.connect(host='localhost',
