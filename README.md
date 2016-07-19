@@ -3,8 +3,8 @@
 A web application that allows users to create travel itineraries for their vacations.
 
 ## To run application:
-1. Open up terminal and change directory (cd) until your current working directory is the directory containing "views.py".
-2. Type `python views.py` and hit enter.
+1. Open up terminal and change directory (cd) until your current working directory is the directory containing "run.py".
+2. Type `python run.py` and hit enter.
 3. Open up any web browser on the same machine and go to the address `localhost:5000`.
 
 ### Note:
@@ -14,6 +14,7 @@ To use the database functionality, before you run the application for the first 
 2. Enter your mysql password.
 3. Type `use team1` into the mysql shell.
 4. Exit the mysql shell.
+5. In the file "run.py", at the bottom, replace the default database password with your own MySQL password.
 
 ## Functionality
 <b>Home Page</b><br />
