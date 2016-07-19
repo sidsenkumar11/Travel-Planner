@@ -38,7 +38,7 @@ def home():
 	if session['is_admin']:
 		cursor = db.cursor()
 		cursor.execute("select * from user;")
-		rows = [dict(is_admin="Yes" if row[3] == 1 else "No", username=row[0], password=row[1], first_name=row[4], last_name=row[5], email=row[2]) for row in cursor.fetchall()]
+		rows = [dict(is_admin="Yes" if row[3] == 1 else "No", username=row[0], password=row[1], first_name=row[4], last_name=row[5], email=row[2], suspended="Yes" if row[7] == 1 else "No") for row in cursor.fetchall()]
 
 	return render_template("home.html", session=session, items=rows)
 
@@ -83,18 +83,23 @@ def verify_credentials():
 
 	if rows:
 		# User found
-		session['username'] = rows[0][0]
-		session['email'] = rows[0][2]
-		session['is_admin'] = rows[0][3]
-		session['name'] = rows[0][4]	
-		return redirect(url_for('home'))
+		if rows[0][7] != 1:
+			# Not suspended
+			session['username'] = rows[0][0]
+			session['email'] = rows[0][2]
+			session['is_admin'] = rows[0][3]
+			session['name'] = rows[0][4]	
+			return redirect(url_for('home'))
+		else:
+			# Suspended user
+			error='User suspended.'
 	else:
 		# No such user. Login again.
 		error = 'Incorrect username or password. Please try again.'
 	return render_template('login.html', error=error)
 
 # On Register Form Submit. Loads home page.
-# TODO: Re-fill out correct fields when registration fails.
+# TODO: Put proper address for each user. Re-fill out correct fields when registration fails.
 @app.route('/register', methods=['POST'])
 def register():
 
@@ -135,8 +140,8 @@ def register():
 	cursor = db.cursor()
 	cursor.execute("insert into address (street_no, street_name, city, state, zip) values ("
 			+ street_no + ", '" + street + "', '" + city + "', '" + state + "', '" + zipcode + "');")
-	cursor.execute("insert into user (username, password, email, is_admin, first_name, last_name, address_id) values ('"
-	+ name + "', '" + password1 + "', '" + email + "', false, '" + firstname + "', '" + lastname + "', 1);")
+	cursor.execute("insert into user (username, password, email, is_admin, first_name, last_name, address_id, suspended) values ('"
+	+ name + "', '" + password1 + "', '" + email + "', false, '" + firstname + "', '" + lastname + "', 1, 0);")
 	db.commit()
 
 	# Update current user session
@@ -159,6 +164,16 @@ def delete_user(username):
 
 	cursor = db.cursor()
 	cursor.execute("delete from user where username='" + username + "';")
+	db.commit()
+
+	return redirect(url_for('home'))
+
+# Suspend user from admin panel
+@app.route('/suspend-user/<username>')
+def suspend_user(username):
+
+	cursor = db.cursor()
+	cursor.execute("update user set suspended=1 where username='" + username + "';")
 	db.commit()
 
 	return redirect(url_for('home'))

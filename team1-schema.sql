@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS user (
 	first_name VARCHAR(35) NOT NULL,
 	last_name VARCHAR(35) NOT NULL,
 	address_id INTEGER NOT NULL,
+	suspended BOOLEAN NOT NULL,
 
 	FOREIGN KEY (address_id) REFERENCES address(address_id)
 		ON DELETE CASCADE

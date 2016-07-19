@@ -21,6 +21,7 @@
 					<th>First Name</th>
 					<th>Last Name</th>
 					<th>E-Mail</th>
+					<th>Suspended</th>
 					<th>Delete User</th>
 					<th>Suspend User</th>
 					<th>Make Admin</th>
@@ -35,6 +36,7 @@
 					<td>{{ item.first_name }}</td>
 					<td>{{ item.last_name }}</td>
 					<td>{{ item.email }}</td>
+					<td>{{ item.suspended }}</td>
 					<td><a class="waves-effect waves-light btn" href="delete-user/{{ item.username }}">Delete</a></td>
 					<td><a class="waves-effect waves-light btn" href="suspend-user/{{ item.username }}">Suspend</a></td>
 					<td><a class="waves-effect waves-light btn" href="make-admin/{{ item.username }}">Make-Admin</a></td>
