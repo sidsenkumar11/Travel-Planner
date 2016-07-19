@@ -5,10 +5,28 @@
 
 <div class="row">
 	<div class="col s12">
-		<h2>Welcome, {{name}}</h2>
-		<p class="text-align">
-			This page will contain a list of attractions you have visited that you can select to review.
-		</p>
+		<h2 class="center-align">Review Past Attractions</h2>
+		
+		<table class="responsive-table">
+			<thead>
+				<tr>
+					<th>Date Visited</th>
+					<th>Attraction Name</th>
+					<th>Description</th>
+					<th>Write a Review</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in items %}
+				<tr>
+					<td>{{ item.date }}</td>
+					<td>{{ item.name }}</td>
+					<td>{{ item.description }}</td>
+					<td><a class="waves-effect waves-light btn" href="write-review/{{ item.a_id }}">Review</a></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
 </div>
 {% endblock %}
