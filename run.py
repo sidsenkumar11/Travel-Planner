@@ -5,6 +5,7 @@ from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired
 import hashlib
 import pymysql
+import time
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8ffe05624dfe0efdf7c7f67288d4f4ce5005e0dfb6a1bc48366ef9906dd0586e'
@@ -13,8 +14,8 @@ app.config['SECRET_KEY'] = '8ffe05624dfe0efdf7c7f67288d4f4ce5005e0dfb6a1bc48366e
 #                          WTF FORMS                                #
 #####################################################################
 class ReviewForm(Form):
-    title = StringField('title', validators=[DataRequired()])
-    body = StringField('body', widget=TextArea(), validators=[DataRequired()])
+    title = StringField('review_title', validators=[DataRequired()])
+    body = StringField('review_body', widget=TextArea(), validators=[DataRequired()])
 
 #####################################################################
 #                          WEB PAGES                                #
@@ -56,12 +57,12 @@ def home():
 # Shows current trip itinerary.
 @app.route('/trip')
 def trip():
-	return render_template('trip.html')
+	return render_template('trip.html', session=session)
 
 # Shows all available attractions.
 @app.route('/attractions')
 def attractions():
-	return render_template('attractions.html')
+	return render_template('attractions.html', session=session)
 
 # Select visisted attraction to review.
 @app.route('/review')
@@ -71,8 +72,8 @@ def reviews():
 	# Also find out which index into row to get the date, name, and description.
 	cursor = db.cursor()
 	cursor.execute("select * from user;")
-	attractions = [dict(date=row[0], name=row[1], description=row[2], attraction_id=row[3]) for row in cursor.fetchall()]
-	return render_template('review.html', items=attractions)
+	attractions = [dict(date=row[0], name=row[2], description=row[1]) for row in cursor.fetchall()]
+	return render_template('review.html', items=attractions, session=session)
 
 #####################################################################
 #                            REQUESTS                               #
@@ -152,7 +153,7 @@ def register():
 	cursor.execute("insert into address (street_no, street_name, city, state, zip) values ("
 			+ street_no + ", '" + street + "', '" + city + "', '" + state + "', '" + zipcode + "');")
 	cursor.execute("insert into user (username, password, email, is_admin, first_name, last_name, address_id, suspended) values ('"
-	+ name + "', '" + password1 + "', '" + email + "', false, '" + firstname + "', '" + lastname + "', 1, 0);")
+	+ name + "', '" + password1 + "', '" + email + "', false, '" + firstname + "', '" + lastname + "', 1, 0);") # TODO: Remove 1 and replace with address ID of newly created address
 	db.commit()
 
 	# Update current user session
@@ -184,7 +185,11 @@ def delete_user(username):
 def suspend_user(username):
 
 	cursor = db.cursor()
-	cursor.execute("update user set suspended=1 where username='" + username + "';")
+	cursor.execute("select suspended from user where username='" + username + "';")
+	if cursor.fetchall()[0][0] == 1:
+		cursor.execute("update user set suspended=0 where username='" + username + "';")
+	else:
+		cursor.execute("update user set suspended=1 where username='" + username + "';")
 	db.commit()
 
 	return redirect(url_for('home'))
@@ -199,19 +204,42 @@ def make_admin(username):
 
 	return redirect(url_for('home'))
 
-# Submit review for attraction by its ID.
-# TODO: Only allow attraction ID to be reviewed if user visited it.
-@app.route('/write-review/<attraction_id>')
-def write_review(attraction_id):
+# Submit review for attraction by its name.
+@app.route('/write-review/<attraction_name>')
+def write_review(attraction_name):
 	cursor = db.cursor()
+
+	# TODO: Write SQL query that gets all the past activities completed by this user.
+	# Also find out which index into row to get the date, name, and description.
 	cursor.execute("select * from user;")
-	attractions = [dict(date=row[0], name=row[1], description=row[2], attraction_id=row[3]) for row in cursor.fetchall()]
+	attractions = [dict(date=row[0], name=row[2], description=row[1]) for row in cursor.fetchall()]
 
-	cursor.execute("select attraction_name from attraction where attraction_id=" + str(attraction_id))
-	attraction_name = cursor.fetchall()[0][0]
+	valid_review = False
 
-	form = ReviewForm()
-	return render_template('review.html', items=attractions, review=1, form=form, attraction_name=attraction_name)
+	for attraction in attractions:
+		if attraction['name'] == attraction_name:
+			valid_review = True
+			break
+
+	if valid_review:
+		form = ReviewForm()
+		return render_template('review.html', items=attractions, attraction_name=attraction_name, review=1, form=form, session=session)
+	else:
+		error='You must complete a visit to the attraction before you can review it!'
+		return render_template('review.html', items=attractions, error=error, session=session)
+
+@app.route('/create-review', methods=['POST'])
+def create_review():
+	cursor = db.cursor()
+	query = "insert into review (title, authored_date, body, username, attraction_name) values ('" + request.form['title'] + "', '" + time.strftime('%Y-%m-%d') + "', '" + request.form['body'] + "', '" + session['username'] + "', '" + request.form['attraction_name'] + "');"
+	cursor.execute(query)
+
+	# TODO: Get Reviews
+	cursor.execute("select * from user;")
+	attractions = [dict(date=row[0], name=row[2], description=row[1]) for row in cursor.fetchall()]
+
+	message = "Created review for " + request.form['attraction_name'] + "!"
+	return render_template('review.html', items=attractions, success=message, session=session)
 
 # Run the application
 if __name__ == '__main__':

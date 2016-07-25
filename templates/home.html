@@ -38,7 +38,7 @@
 					<td>{{ item.email }}</td>
 					<td>{{ item.suspended }}</td>
 					<td><a class="waves-effect waves-light btn" href="delete-user/{{ item.username }}">Delete</a></td>
-					<td><a class="waves-effect waves-light btn" href="suspend-user/{{ item.username }}">Suspend</a></td>
+					<td><a class="waves-effect waves-light btn" href="suspend-user/{{ item.username }}">{% if item.suspended=='Yes' %}Unsuspend{% else %}Suspend{% endif %}</a></td>
 					<td><a class="waves-effect waves-light btn" href="make-admin/{{ item.username }}">Make-Admin</a></td>
 				</tr>
 				{% endfor %}
