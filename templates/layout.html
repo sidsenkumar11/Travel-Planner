@@ -11,10 +11,10 @@
         <!--Import Google Icon Font-->
         <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!--Import materialize.css-->
-        <link type="text/css" rel="stylesheet" href="static/css/materialize.min.css"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}"  media="screen,projection"/>
 
-        <link type="text/css" rel="stylesheet" href="static/css/style.css"/>
-        <link type="text/css" rel="stylesheet" href="static/css/custom.css"/>
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}"/>
       <title>{% block title %}{% endblock %}</title>
   </head>
 
@@ -25,20 +25,20 @@
             <div class="nav-wrapper grey darken-4">
                 <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
                 <ul class="left hide-on-med-and-down nav-bar">
-                    <li><a href="home">Home</a></li>
-                    <li><a href="trip">My Trip</a></li>
-                    <li><a href="attractions">Browse Attractions</a></li>
-                    <li><a href="review">Write a Review</a></li>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/trip">My Trip</a></li>
+                    <li><a href="/attractions">Browse Attractions</a></li>
+                    <li><a href="/review">Write a Review</a></li>
                 </ul>
                 <ul class="right hide-on-med-and-down nav-bar">
-                    <li><a href="logout">Log Out</a></li>
+                    <li><a href="/logout">Log Out</a></li>
                 </ul>
                 <ul class="side-nav nav-bar grey darken-4" id="mobile-demo">
-                    <li><a href="home" style="font-color: white">Home</a></li>
-                    <li><a href="trip">My Trip</a></li>
-                    <li><a href="attractions">Browse Attractions</a></li>
-                    <li><a href="review">Write a Review</a></li>
-                    <li><a href="logout">Log Out</a></li>
+                    <li><a href="/home" style="font-color: white">Home</a></li>
+                    <li><a href="/trip">My Trip</a></li>
+                    <li><a href="/attractions">Browse Attractions</a></li>
+                    <li><a href="/review">Write a Review</a></li>
+                    <li><a href="/logout">Log Out</a></li>
                 </ul>
             </div>
         </nav>
@@ -62,7 +62,7 @@
 
     <!--Import jQuery before materialize.js-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="static/js/materialize.min.js"></script>
-    <script type="text/javascript" src="static/js/init.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/init.js') }}"></script>
   </body>
 </html>

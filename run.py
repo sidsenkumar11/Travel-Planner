@@ -1,9 +1,20 @@
 from flask import Flask, flash, render_template, request, redirect, session, url_for
+from flask_wtf import Form
+from wtforms import StringField
+from wtforms.widgets import TextArea
+from wtforms.validators import DataRequired
 import hashlib
 import pymysql
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8ffe05624dfe0efdf7c7f67288d4f4ce5005e0dfb6a1bc48366ef9906dd0586e'
+
+#####################################################################
+#                          WTF FORMS                                #
+#####################################################################
+class ReviewForm(Form):
+    title = StringField('title', validators=[DataRequired()])
+    body = StringField('body', widget=TextArea(), validators=[DataRequired()])
 
 #####################################################################
 #                          WEB PAGES                                #
@@ -60,7 +71,7 @@ def reviews():
 	# Also find out which index into row to get the date, name, and description.
 	cursor = db.cursor()
 	cursor.execute("select * from user;")
-	attractions = [dict(date=row[0], name=row[1], description=row[2], a_id=row[3]) for row in cursor.fetchall()]
+	attractions = [dict(date=row[0], name=row[1], description=row[2], attraction_id=row[3]) for row in cursor.fetchall()]
 	return render_template('review.html', items=attractions)
 
 #####################################################################
@@ -190,9 +201,17 @@ def make_admin(username):
 
 # Submit review for attraction by its ID.
 # TODO: Only allow attraction ID to be reviewed if user visited it.
-@app.route('/write-review/<a_id>')
-def write_review(a_id):
-	return render_template('review.html', the_id=a_id)
+@app.route('/write-review/<attraction_id>')
+def write_review(attraction_id):
+	cursor = db.cursor()
+	cursor.execute("select * from user;")
+	attractions = [dict(date=row[0], name=row[1], description=row[2], attraction_id=row[3]) for row in cursor.fetchall()]
+
+	cursor.execute("select attraction_name from attraction where attraction_id=" + str(attraction_id))
+	attraction_name = cursor.fetchall()[0][0]
+
+	form = ReviewForm()
+	return render_template('review.html', items=attractions, review=1, form=form, attraction_name=attraction_name)
 
 # Run the application
 if __name__ == '__main__':
