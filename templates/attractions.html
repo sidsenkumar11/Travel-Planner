@@ -7,8 +7,39 @@
 	<div class="col s12">
 		<h2>Welcome, {{session.name}}.</h2>
 		<p class="text-align">
-			This page will be a list of attractions to visit.
+			Planning your next trip? Look no further!
 		</p>
+		<h4 class="center-align">Attractions</h4>
+		<table class="responsive-table centered">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Description</th>
+					<th>Hours of Operation</th>
+					<th>Nearest Public Transport</th>
+					<th>Time Slots</th>
+					<th>Price</th>
+					<th>Add to My Trip</th>
+					<th>View Reviews</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in items %}
+				<tr>
+					<td>{{ item.name }}</td>
+					<td>{{ item.address }}</td>
+					<td>{{ item.description }}</td>
+					<td>{{ item.hours }}</td>
+					<td>{{ item.nearest_transport }}</td>
+					<td>{{ item.time_slots }}</td>
+					<td>{{ item.price }}</td>
+					<td><a class="waves-effect waves-light btn" href="/add-to-trip/{{ item.name }}">Add</a></td>
+					<td><a class="waves-effect waves-light btn" href="/view-reviews/{{ item.name }}">Reviews</a></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
 </div>
 {% endblock %}

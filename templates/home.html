@@ -5,13 +5,13 @@
 
 <div class="row">
 	<div class="col s12">
-		<h2>Welcome, {{session.name}}.</h2>
+		<h4>Admin Panel</h4>
 		{% if session.is_admin == 0 %}
 		<p class="text-align">
 			Click on one of the links at the top to get started!
 		</p>
 		{% else %}
-		<h4 class="center-align">Admin Panel</h4>
+		<h3 class="center-align">Manage Users</h3>
 		<table class="responsive-table centered">
 			<thead>
 				<tr>
@@ -28,7 +28,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for item in items %}
+				{% for item in users %}
 				<tr>
 					<td>{{ item.is_admin }}</td>
 					<td>{{ item.username }}</td>
@@ -37,9 +37,39 @@
 					<td>{{ item.last_name }}</td>
 					<td>{{ item.email }}</td>
 					<td>{{ item.suspended }}</td>
-					<td><a class="waves-effect waves-light btn" href="delete-user/{{ item.username }}">Delete</a></td>
-					<td><a class="waves-effect waves-light btn" href="suspend-user/{{ item.username }}">{% if item.suspended=='Yes' %}Unsuspend{% else %}Suspend{% endif %}</a></td>
-					<td><a class="waves-effect waves-light btn" href="make-admin/{{ item.username }}">Make-Admin</a></td>
+					<td><a class="waves-effect waves-light btn" href="/delete-user/{{ item.username }}">Delete</a></td>
+					<td><a class="waves-effect waves-light btn" href="/suspend-user/{{ item.username }}">{% if item.suspended=='Yes' %}Unsuspend{% else %}Suspend{% endif %}</a></td>
+					<td><a class="waves-effect waves-light btn" href="/make-admin/{{ item.username }}">Make-Admin</a></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<h3 class="center-align">Manage Attractions</h3><br />
+		<div class="center-align"><a class="waves-effect waves-light btn" href="/add-attraction">Add a new Attraction</a></div><br />
+		<table class="responsive-table centered">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Description</th>
+					<th>Hours of Operation</th>
+					<th>Nearest Public Transport</th>
+					<th>Time Slots</th>
+					<th>Price</th>
+					<th>Update Attraction</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in attractions %}
+				<tr>
+					<td>{{ item.name }}</td>
+					<td>{{ item.address }}</td>
+					<td>{{ item.description }}</td>
+					<td>{{ item.hours }}</td>
+					<td>{{ item.nearest_transport }}</td>
+					<td>{{ item.time_slots }}</td>
+					<td>{{ item.price }}</td>
+					<td><a class="waves-effect waves-light btn" href="/upate-attraction/{{ item.name }}">Update</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>

@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %} {{ attraction_name }} Reviews | {{session.username}}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col s12">
+		<h4 class="center-align">Reviews for {{ attraction_name }}</h4>
+		<table class="responsive-table centered">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Username</th>
+					<th>Title</th>
+					<th>Body</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in reviews %}
+				<tr>
+					<td>{{ item.authored_date }}</td>
+					<td>{{ item.username }}</td>
+					<td>{{ item.title }}</td>
+					<td>{{ item.body }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}

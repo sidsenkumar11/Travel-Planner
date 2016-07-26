@@ -31,7 +31,7 @@ def index():
 @app.route('/login-page')
 def login_page():
 
-	# Show login page if not logged in, edirect to home if already logged in.
+	# Show login page if not logged in, redirect to home if already logged in.
 	if 'username' not in session or session['username'] == '':
 		return render_template('login.html')
 	else:
@@ -50,34 +50,94 @@ def home():
 	if session['is_admin']:
 		cursor = db.cursor()
 		cursor.execute("select * from user;")
-		rows = [dict(is_admin="Yes" if row[3] == 1 else "No", username=row[0], password=row[1], first_name=row[4], last_name=row[5], email=row[2], suspended="Yes" if row[7] == 1 else "No") for row in cursor.fetchall()]
+		users = [dict(is_admin="Yes" if row[3] == 1 else "No", username=row[0], password=row[1], first_name=row[4], last_name=row[5], email=row[2], suspended="Yes" if row[7] == 1 else "No") for row in cursor.fetchall()]
 
-	return render_template("home.html", session=session, items=rows)
+		cursor.execute("select * from attraction;")
+		attractions = [dict(name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
+
+	return render_template("home.html", session=session, users=users, attractions=attractions)
 
 # Shows current trip itinerary.
 @app.route('/trip')
 def trip():
-	return render_template('trip.html', session=session)
+
+	# TODO: Write SQL query that gets all the activities in trip completed by this user.
+	cursor = db.cursor()
+	cursor.execute("select * from trip;")
+	attractions = [dict(date=row[0], name=row[2], description=row[1]) for row in cursor.fetchall()]
+	# TODO: Calculate total cost from trip table
+	return render_template('trip.html', items=attractions, session=session, total_cost=100)
 
 # Shows all available attractions.
 @app.route('/attractions')
 def attractions():
-	return render_template('attractions.html', session=session)
+
+	cursor = db.cursor()
+	cursor.execute("select * from attraction;")
+	attractions = [dict(name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
+	return render_template('attractions.html', items=attractions, session=session)
 
 # Select visisted attraction to review.
 @app.route('/review')
 def reviews():
 
-	# TODO: Write SQL query that gets all the past activities completed by this user.
 	# Also find out which index into row to get the date, name, and description.
 	cursor = db.cursor()
-	cursor.execute("select * from user;")
-	attractions = [dict(date=row[0], name=row[2], description=row[1]) for row in cursor.fetchall()]
+	query = "select activity_date, attraction.attraction_name, description from user join activity join attraction where user.username = '" + session['username'] + "' and ((activity_date = CURDATE() and end_time <= CURTIME()) or activity_date < CURDATE());"
+	cursor.execute(query)
+	attractions = [dict(date=row[0], name=row[1], description=row[2]) for row in cursor.fetchall()]
 	return render_template('review.html', items=attractions, session=session)
 
 #####################################################################
 #                            REQUESTS                               #
 #####################################################################
+
+# View Reviews
+@app.route('/view-reviews/<attraction_name>')
+def view_review(attraction_name):
+
+	cursor = db.cursor()
+	query = "select authored_date, body, username, title from review where attraction_name='" + attraction_name + "';"
+	cursor.execute(query)
+	reviews = [dict(authored_date=row[0], body=row[1], username=row[2], title=row[3]) for row in cursor.fetchall()]
+
+	return render_template('attraction_reviews.html', session=session, reviews=reviews, attraction_name=attraction_name)
+
+@app.route('/complete')
+def complete():
+
+	# Pay if total cost > 0, else update trip_id record to "booked"
+	cursor = db.cursor()
+	query = ""
+	cursor.execute(query)
+
+	if cost > 0:
+		return render_template('payment.html', session=session)
+	else:
+		return render_template('booked.html', session=session)
+
+# Add an attraction to My Trip
+@app.route('/add-to-trip/<attraction_name>')
+def add_to_trip(attraction_name):
+
+	# TODO: Check if the attraction_name is on list of attractions
+	# TODO: Check if attraction is already in trip
+	cursor = db.cursor()
+
+	# Get attraction information
+	cursor.execute("select * from attraction where attraction_name='" + attraction_name + "';")
+	attraction_info = cursor.fetchall()[0]
+	success = attraction_name + " added to My Trip!"
+
+	# Add attraction to trip
+	query = "insert into "
+	cursor.execute(query)
+	db.commit()
+
+	cursor.execute("select * from attraction")
+	attractions = [dict(attraction_name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
+
+	return render_template('attractions.html', items=attractions, session=session, success=success)
 
 # On Login Form Submit. Loads home page or shows error.
 @app.route('/login', methods=['POST'])
@@ -209,10 +269,10 @@ def make_admin(username):
 def write_review(attraction_name):
 	cursor = db.cursor()
 
-	# TODO: Write SQL query that gets all the past activities completed by this user.
-	# Also find out which index into row to get the date, name, and description.
-	cursor.execute("select * from user;")
-	attractions = [dict(date=row[0], name=row[2], description=row[1]) for row in cursor.fetchall()]
+	# Gets all past completed activites
+	query = "select activity_date, attraction.attraction_name, description from user join activity join attraction where user.username = '" + session['username'] + "' and ((activity_date = CURDATE() and end_time <= CURTIME()) or activity_date < CURDATE());"
+	cursor.execute(query)
+	attractions = [dict(date=row[0], name=row[1], description=row[2]) for row in cursor.fetchall()]
 
 	valid_review = False
 
@@ -233,10 +293,12 @@ def create_review():
 	cursor = db.cursor()
 	query = "insert into review (title, authored_date, body, username, attraction_name) values ('" + request.form['title'] + "', '" + time.strftime('%Y-%m-%d') + "', '" + request.form['body'] + "', '" + session['username'] + "', '" + request.form['attraction_name'] + "');"
 	cursor.execute(query)
+	db.commit()
 
-	# TODO: Get Reviews
-	cursor.execute("select * from user;")
-	attractions = [dict(date=row[0], name=row[2], description=row[1]) for row in cursor.fetchall()]
+	# Gets reviews for activities already visited
+	query = "select activity_date, attraction.attraction_name, description from user join activity join attraction where user.username = '" + session['username'] + "' and ((activity_date = CURDATE() and end_time <= CURTIME()) or activity_date < CURDATE());"
+	cursor.execute(query)
+	attractions = [dict(date=row[0], name=row[1], description=row[2]) for row in cursor.fetchall()]
 
 	message = "Created review for " + request.form['attraction_name'] + "!"
 	return render_template('review.html', items=attractions, success=message, session=session)
