@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS address (
 	street_no INTEGER,
 	street_name VARCHAR(50) NOT NULL,
 	city VARCHAR(50) NOT NULL,
-	state VARCHAR(20) NOT NULL,
+	state VARCHAR(20),
+	country VARCHAR(50) NOT NULL,
 	zip VARCHAR(10) NOT NULL
 );
 
