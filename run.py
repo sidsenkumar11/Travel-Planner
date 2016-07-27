@@ -80,8 +80,10 @@ def trip():
 def attractions():
 
 	cursor = db.cursor()
-	cursor.execute("select * from attraction;")
-	attractions = [dict(name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
+	cursor.execute("select * from attraction natural join address;")
+	attractions = [dict(name=row[1], description=row[2], nearest_transport=row[3], 
+		address=(str(row[4]) if row[4] is not None else "") + " " + (row[5] if row[5] is not None else "") + " " + (row[6] if row[6] is not None else "") + ", " + (row[7] if row[7] is not None else "") + " " + (row[8] if row[8] is not None else "") + " " + (row[9] if row[9] is not None else "")) for row in cursor.fetchall()]
+
 	return render_template('attractions.html', items=attractions, session=session)
 
 # Select visisted attraction to review.
