@@ -54,8 +54,8 @@ def home():
 
 		cursor.execute("select * from attraction;")
 		attractions = [dict(name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
-
-	return render_template("home.html", session=session, users=users, attractions=attractions)
+		return render_template("home.html", session=session, users=users, attractions=attractions)
+	return render_template("home.html", session=session)
 
 # Shows current trip itinerary.
 @app.route('/trip')
