@@ -34,8 +34,8 @@
 					<td>{{ item.nearest_transport }}</td>
 					<td>{{ item.time_slots }}</td>
 					<td>{{ item.price }}</td>
-					<td><a class="waves-effect waves-light btn" href="/add-to-trip/{{ item.name }}">Add</a></td>
-					<td><a class="waves-effect waves-light btn" href="/view-reviews/{{ item.name }}">Reviews</a></td>
+					<td><a class="waves-effect waves-light btn" href="/add-to-trip/{{ loop.index }}">Add</a></td>
+					<td><a class="waves-effect waves-light btn" href="/view-reviews/{{ loop.index }}">Reviews</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>

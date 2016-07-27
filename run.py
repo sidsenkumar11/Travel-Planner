@@ -11,6 +11,12 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '8ffe05624dfe0efdf7c7f67288d4f4ce5005e0dfb6a1bc48366ef9906dd0586e'
 
 #####################################################################
+#                          SQL Queries                              #
+#####################################################################
+def view_completed_attractions_query():
+	 return "select activity_date, attraction.attraction_name, description from activity natural join attraction where activity.username = '" + session['username'] + "' and ((activity_date = CURDATE() and end_time <= CURTIME()) or activity_date < CURDATE());"
+
+#####################################################################
 #                          WTF FORMS                                #
 #####################################################################
 class ReviewForm(Form):
@@ -52,8 +58,10 @@ def home():
 		cursor.execute("select * from user;")
 		users = [dict(is_admin="Yes" if row[3] == 1 else "No", username=row[0], password=row[1], first_name=row[4], last_name=row[5], email=row[2], suspended="Yes" if row[7] == 1 else "No") for row in cursor.fetchall()]
 
-		cursor.execute("select * from attraction;")
-		attractions = [dict(name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
+		cursor.execute("select * from attraction natural join address;")
+		attractions = [dict(name=row[1], description=row[2], nearest_transport=row[3], 
+			address=(str(row[4]) if row[4] is not None else "") + " " + (row[5] if row[5] is not None else "") + " " + (row[6] if row[6] is not None else "") + ", " + (row[7] if row[7] is not None else "") + " " + (row[8] if row[8] is not None else "") + " " + (row[9] if row[9] is not None else "")) for row in cursor.fetchall()]
+
 		return render_template("home.html", session=session, users=users, attractions=attractions)
 	return render_template("home.html", session=session)
 
@@ -65,7 +73,6 @@ def trip():
 	cursor = db.cursor()
 	cursor.execute("select * from trip;")
 	attractions = [dict(date=row[0], name=row[2], description=row[1]) for row in cursor.fetchall()]
-	# TODO: Calculate total cost from trip table
 	return render_template('trip.html', items=attractions, session=session, total_cost=100)
 
 # Shows all available attractions.
@@ -83,7 +90,7 @@ def reviews():
 
 	# Also find out which index into row to get the date, name, and description.
 	cursor = db.cursor()
-	query = "select activity_date, attraction.attraction_name, description from user join activity join attraction where user.username = '" + session['username'] + "' and ((activity_date = CURDATE() and end_time <= CURTIME()) or activity_date < CURDATE());"
+	query = view_completed_attractions_query()
 	cursor.execute(query)
 	attractions = [dict(date=row[0], name=row[1], description=row[2]) for row in cursor.fetchall()]
 	return render_template('review.html', items=attractions, session=session)
@@ -93,10 +100,14 @@ def reviews():
 #####################################################################
 
 # View Reviews
-@app.route('/view-reviews/<attraction_name>')
-def view_review(attraction_name):
+@app.route('/view-reviews/<attraction_index>')
+def view_review(attraction_index):
 
 	cursor = db.cursor()
+	cursor.execute("select * from attraction;")
+	attractions = [dict(name=row[0]) for row in cursor.fetchall()]
+
+	attraction_name = attractions[int(attraction_index) - 1]['name']
 	query = "select authored_date, body, username, title from review where attraction_name='" + attraction_name + "';"
 	cursor.execute(query)
 	reviews = [dict(authored_date=row[0], body=row[1], username=row[2], title=row[3]) for row in cursor.fetchall()]
@@ -117,14 +128,20 @@ def complete():
 		return render_template('booked.html', session=session)
 
 # Add an attraction to My Trip
-@app.route('/add-to-trip/<attraction_name>')
-def add_to_trip(attraction_name):
+@app.route('/add-to-trip/<attraction_index>')
+def add_to_trip(attraction_index):
 
 	# TODO: Check if the attraction_name is on list of attractions
 	# TODO: Check if attraction is already in trip
 	cursor = db.cursor()
 
 	# Get attraction information
+
+	cursor = db.cursor()
+	cursor.execute("select * from attraction;")
+	attractions = [dict(name=row[0]) for row in cursor.fetchall()]
+
+	attraction_name = attractions[int(attraction_index) - 1]['name']
 	cursor.execute("select * from attraction where attraction_name='" + attraction_name + "';")
 	attraction_info = cursor.fetchall()[0]
 	success = attraction_name + " added to My Trip!"
@@ -265,14 +282,15 @@ def make_admin(username):
 	return redirect(url_for('home'))
 
 # Submit review for attraction by its name.
-@app.route('/write-review/<attraction_name>')
-def write_review(attraction_name):
+@app.route('/write-review/<attraction_index>')
+def write_review(attraction_index):
 	cursor = db.cursor()
 
 	# Gets all past completed activites
-	query = "select activity_date, attraction.attraction_name, description from user join activity join attraction where user.username = '" + session['username'] + "' and ((activity_date = CURDATE() and end_time <= CURTIME()) or activity_date < CURDATE());"
+	query = view_completed_attractions_query()
 	cursor.execute(query)
 	attractions = [dict(date=row[0], name=row[1], description=row[2]) for row in cursor.fetchall()]
+	attraction_name = attractions[int(attraction_index) - 1]['name']
 
 	valid_review = False
 
@@ -296,11 +314,13 @@ def create_review():
 	db.commit()
 
 	# Gets reviews for activities already visited
-	query = "select activity_date, attraction.attraction_name, description from user join activity join attraction where user.username = '" + session['username'] + "' and ((activity_date = CURDATE() and end_time <= CURTIME()) or activity_date < CURDATE());"
+
+	query = view_completed_attractions_query()
 	cursor.execute(query)
 	attractions = [dict(date=row[0], name=row[1], description=row[2]) for row in cursor.fetchall()]
+	attraction_name = request.form['attraction_name']
 
-	message = "Created review for " + request.form['attraction_name'] + "!"
+	message = "Created review for " + attraction_name + "!"
 	return render_template('review.html', items=attractions, success=message, session=session)
 
 # Run the application

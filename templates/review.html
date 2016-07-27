@@ -22,7 +22,7 @@
 					<td>{{ item.date }}</td>
 					<td>{{ item.name }}</td>
 					<td>{{ item.description }}</td>
-					<td><a class="waves-effect waves-light btn" href="/write-review/{{ item.name }}">Review</a></td>
+					<td><a class="waves-effect waves-light btn" href="/write-review/{{ loop.index }}">Review</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>

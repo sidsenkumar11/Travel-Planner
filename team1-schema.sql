@@ -161,7 +161,7 @@ DROP TABLE IF EXISTS review;
 CREATE TABLE IF NOT EXISTS review (
 
 	review_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-	title VARCHAR(20) NOT NULL,
+	title VARCHAR(100) NOT NULL,
 	authored_date DATE NOT NULL,
 	body TEXT NOT NULL,
 	username VARCHAR(30) NOT NULL, # This is also the author of the review

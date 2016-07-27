@@ -5,12 +5,13 @@
 
 <div class="row">
 	<div class="col s12">
-		<h4>Admin Panel</h4>
 		{% if session.is_admin == 0 %}
 		<p class="text-align">
+			<h2>Welcome, {{ session.name }}.</h2>
 			Click on one of the links at the top to get started!
 		</p>
 		{% else %}
+		<h4>Admin Panel</h4>
 		<h3 class="center-align">Manage Users</h3>
 		<table class="responsive-table centered">
 			<thead>

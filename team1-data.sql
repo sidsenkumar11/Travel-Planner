@@ -51,8 +51,8 @@ INSERT INTO activity (activity_name, start_time, end_time, activity_date, attrac
 INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Guided Tour of Sacre-Coeur Basilica', '15:30:00', '17:30:00', '2016-07-30', 'Sacre-Coeur Basilica', 'soham32', 1);
 
 # 3 ACTIVITES in Metz, France
-INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Visit Pompidou Center', '17:10:00', '18:00:00', '2016-12-30', 'Pompidou Center', 'soham32', 2);
-INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Visit Metz Cathedral', '13:00:00', '15:00:00', '2016-12-15', 'Metz Cathedral', 'soham32', 2);
+INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Visit Pompidou Center', '17:10:00', '18:00:00', '2016-12-30', 'Pompidou Center', 'siddhi16', 2);
+INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Visit Metz Cathedral', '13:00:00', '15:00:00', '2016-12-15', 'Metz Cathedral', 'siddhi16', 2);
 INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('See Fireworks', '15:30:00', '17:30:00', '2017-01-01', 'Fort de Queuleu', 'siddhi16', 2);
 
 # 3 ACTIVITES in Munich, Germany

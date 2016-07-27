@@ -33,7 +33,7 @@
 					<td>{{ item.nearest_transport }}</td>
 					<td>{{ item.time_slots }}</td>
 					<td>{{ item.price }}</td>
-					<td><a class="waves-effect waves-light btn" href="remove-from-trip/{{ item.name }}">Remove</a></td>
+					<td><a class="waves-effect waves-light btn" href="remove-from-trip/{{ loop.index }}">Remove</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>
