@@ -16,10 +16,7 @@
 					<th>Name</th>
 					<th>Address</th>
 					<th>Description</th>
-					<th>Hours of Operation</th>
 					<th>Nearest Public Transport</th>
-					<th>Time Slots</th>
-					<th>Price</th>
 					<th>Add to My Trip</th>
 					<th>View Reviews</th>
 				</tr>
@@ -30,10 +27,7 @@
 					<td>{{ item.name }}</td>
 					<td>{{ item.address }}</td>
 					<td>{{ item.description }}</td>
-					<td>{{ item.hours }}</td>
 					<td>{{ item.nearest_transport }}</td>
-					<td>{{ item.time_slots }}</td>
-					<td>{{ item.price }}</td>
 					<td><a class="waves-effect waves-light btn" href="/add-to-trip/{{ loop.index }}">Add</a></td>
 					<td><a class="waves-effect waves-light btn" href="/view-reviews/{{ loop.index }}">Reviews</a></td>
 				</tr>
