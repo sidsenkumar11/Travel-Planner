@@ -15,9 +15,9 @@ INSERT INTO address (street_no, street_name, city, state, country, zip) VALUES (
 INSERT INTO address (street_no, street_name, city, state, country, zip) VALUES (716, 'Ponce De Leon Pl NE', 'Atlanta', 'GA', 'USA', '30306');
 
 # 3 USERS
-INSERT INTO user VALUES ('soham32', 'Deval98', 'sdeval3@gatech.edu', FALSE, 'Soham', 'Deval', 10, FALSE);
-INSERT INTO user VALUES ('siddhi16', 'Shah87', 'sshah3@gatech.edu', FALSE, 'Siddhi', 'Shah', 11, FALSE);
-INSERT INTO user VALUES ('vooha20', 'Vellanki45', 'vvellanki3@gatech.edu', FALSE, 'Vooha', 'Vellanki', 12, FALSE);
+INSERT INTO user VALUES ('soham32', '561379846578f1d29d0ed58a114b4d83f23eeda0c6c2276bcfd02962479718f4', 'sdeval3@gatech.edu', FALSE, 'Soham', 'Deval', 10, FALSE);
+INSERT INTO user VALUES ('siddhi16', '0b0958b61ebba7756b4365afde8f0e66c380974e72936d61c8b0b20637719cc0', 'sshah3@gatech.edu', FALSE, 'Siddhi', 'Shah', 11, FALSE);
+INSERT INTO user VALUES ('vooha20', 'e8ab89969a7cd8c01df268af371f0f767d16d0e7efa09c3d592cf72f13ef1f3f', 'vvellanki3@gatech.edu', FALSE, 'Vooha', 'Vellanki', 12, FALSE);
 
 # 3 CREDIT CARDS
 INSERT INTO creditcard (card_number, username, first_name, last_name, exp_month, exp_year, address_id) VALUES ('4351903529202345', 'soham32', 'SOHAM', 'DEVAL', 06, 2020, 10);
@@ -129,3 +129,7 @@ INSERT INTO timeslot (start_time, end_time, num_people, attraction_name) VALUES 
 INSERT INTO timeslot (start_time, end_time, num_people, attraction_name) VALUES ('11:30:00', '13:30:00', 10, 'Sacre-Coeur Basilica');
 INSERT INTO timeslot (start_time, end_time, num_people, attraction_name) VALUES ('13:30:00', '15:30:00', 10, 'Sacre-Coeur Basilica');
 INSERT INTO timeslot (start_time, end_time, num_people, attraction_name) VALUES ('15:30:00', '17:30:00', 10, 'Sacre-Coeur Basilica');
+
+# ADMIN ACCOUNT
+insert into address (street_no, street_name, city, state, country, zip) values (59, "Windsor Pond Rd.", "Princeton Junction", "NJ", "USA", "08550");
+insert into user values ("admin", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "pikahero2@gmail.com", 1, "admin", "admin_last_name", 13, 0);
