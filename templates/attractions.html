@@ -17,8 +17,9 @@
 					<th>Address</th>
 					<th>Description</th>
 					<th>Nearest Public Transport</th>
-					<th>Add to My Trip</th>
+					<th>More Details</th>
 					<th>View Reviews</th>
+					<th>Add to My Trip</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -28,8 +29,9 @@
 					<td>{{ item.address }}</td>
 					<td>{{ item.description }}</td>
 					<td>{{ item.nearest_transport }}</td>
-					<td><a class="waves-effect waves-light btn" href="/add-to-trip/{{ loop.index }}">Add</a></td>
+					<td><a class="waves-effect waves-light btn" href="/attraction-details/{{ loop.index }}">More Details</a></td>
 					<td><a class="waves-effect waves-light btn" href="/view-reviews/{{ loop.index }}">Reviews</a></td>
+					<td><a class="waves-effect waves-light btn" href="/add-to-trip/{{ loop.index }}">Add</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>

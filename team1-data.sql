@@ -41,9 +41,9 @@ INSERT INTO attraction (attraction_name, description, address_id) VALUES ('Engli
 INSERT INTO attraction VALUES ('Munich Residence', "The Munich Residenz is the former royal palace of the Bavarian monarchs of the House of Wittelsbach in the centre of the city of Munich, Germany.", "Odeonsplatz (Subway Station)", 9);
 
 # 3 TRIPS
-INSERT INTO trip (is_booked, start_date, end_date, creditcard_id) VALUES (TRUE, '2016-07-30', '2016-08-05', 1);
-INSERT INTO trip (is_booked, start_date, end_date, creditcard_id) VALUES (FALSE, '2016-12-15', '2017-01-15', 2);
-INSERT INTO trip (is_booked, start_date, end_date, creditcard_id) VALUES (TRUE, '2016-05-18', '2016-05-30', 3);
+INSERT INTO trip (is_booked, start_date, end_date, creditcard_id, username) VALUES (TRUE, '2016-07-30', '2016-08-05', 1, 'soham32');
+INSERT INTO trip (is_booked, start_date, end_date, creditcard_id, username) VALUES (FALSE, '2016-12-15', '2017-01-15', 2, 'siddhi16');
+INSERT INTO trip (is_booked, start_date, end_date, creditcard_id, username) VALUES (TRUE, '2016-05-18', '2016-05-30', 3, 'vooha20');
 
 # 3 ACTIVITES in Paris, France
 INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Climb up Eiffel Tower', '17:10:00', '18:00:00', '2016-07-30', 'Eiffel Tower' ,'soham32', 1);

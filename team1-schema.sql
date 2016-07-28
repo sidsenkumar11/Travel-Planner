@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS address (
 	zip VARCHAR(10) NOT NULL
 );
 
-
 DROP TABLE IF EXISTS user;
 CREATE TABLE IF NOT EXISTS user (
 
@@ -29,7 +28,7 @@ CREATE TABLE IF NOT EXISTS user (
 
 	FOREIGN KEY (address_id) REFERENCES address(address_id)
 		ON DELETE CASCADE
-		ON UPDATE CASCADE
+		ON UPDATE CASCADE,
 );
 
 
@@ -53,7 +52,6 @@ CREATE TABLE IF NOT EXISTS creditcard (
 		ON UPDATE CASCADE
 );
 
-
 DROP TABLE IF EXISTS attraction;
 CREATE TABLE IF NOT EXISTS attraction (
 
@@ -67,29 +65,31 @@ CREATE TABLE IF NOT EXISTS attraction (
 		ON UPDATE CASCADE
 );
 
-
 DROP TABLE IF EXISTS trip;
 CREATE TABLE IF NOT EXISTS trip (
 
 	trip_id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	is_booked BOOLEAN NOT NULL,
-	start_date DATE NOT NULL,
-	end_date DATE NOT NULL,
+	trip_start_date DATE NOT NULL,
+	trip_end_date DATE NOT NULL,
 	creditcard_id INTEGER NOT NULL,
+	username VARCHAR(30) NOT NULL,
 
 	FOREIGN KEY(creditcard_id) REFERENCES creditcard(creditcard_id)
 		ON DELETE CASCADE
-		ON UPDATE CASCADE
-);
+		ON UPDATE CASCADE,
 
+	FOREIGN KEY(username) REFERENCES user(username)
+		ON DELETE CASCADE
+);
 
 DROP TABLE IF EXISTS activity;
 CREATE TABLE IF NOT EXISTS activity (
 
 	activity_id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	activity_name VARCHAR(100) NOT NULL,
-	start_time TIME NOT NULL,
-	end_time TIME NOT NULL,
+	activity_start_time TIME NOT NULL,
+	activity_end_time TIME NOT NULL,
 	activity_date DATE NOT NULL,
 	attraction_name VARCHAR(100) NOT NULL,
 	username VARCHAR(30) NOT NULL,
@@ -130,11 +130,11 @@ DROP TABLE IF EXISTS hour;
 CREATE TABLE IF NOT EXISTS hour (
 
 	attraction_name VARCHAR(100),
-	start_time TIME,
-	end_time TIME,
+	hour_start_time TIME,
+	hour_end_time TIME,
 	day VARCHAR(10),
 
-	PRIMARY KEY(attraction_name, start_time, end_time, day),
+	PRIMARY KEY(attraction_name, hour_start_time, hour_end_time, day),
 
 	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name)
 		ON DELETE CASCADE
@@ -146,8 +146,8 @@ DROP TABLE IF EXISTS timeslot;
 CREATE TABLE IF NOT EXISTS timeslot (
 
 	timeslot_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-	start_time TIME,
-	end_time TIME,
+	timeslot_start_time TIME,
+	timeslot_end_time TIME,
 	num_people INTEGER,
 	attraction_name VARCHAR(100),
 
@@ -181,6 +181,6 @@ CREATE TABLE IF NOT EXISTS reserves (
 
 	reservation_id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	num_people INTEGER NOT NULL,
-	start_time TIME NOT NULL,
-	end_time TIME
+	reserves_start_time TIME NOT NULL,
+	reserves_end_time TIME
 );
