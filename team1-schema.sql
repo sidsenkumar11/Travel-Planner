@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS user (
 
 	FOREIGN KEY (address_id) REFERENCES address(address_id)
 		ON DELETE CASCADE
-		ON UPDATE CASCADE,
+		ON UPDATE CASCADE
 );
 
 
@@ -72,14 +72,13 @@ CREATE TABLE IF NOT EXISTS trip (
 	is_booked BOOLEAN NOT NULL,
 	trip_start_date DATE NOT NULL,
 	trip_end_date DATE NOT NULL,
-	creditcard_id INTEGER NOT NULL,
+	creditcard_id INTEGER,
 	username VARCHAR(30) NOT NULL,
 
-	FOREIGN KEY(creditcard_id) REFERENCES creditcard(creditcard_id)
-		ON DELETE CASCADE
+	FOREIGN KEY (creditcard_id) REFERENCES creditcard(creditcard_id)
 		ON UPDATE CASCADE,
 
-	FOREIGN KEY(username) REFERENCES user(username)
+	FOREIGN KEY (username) REFERENCES user(username)
 		ON DELETE CASCADE
 );
 
@@ -94,35 +93,18 @@ CREATE TABLE IF NOT EXISTS activity (
 	attraction_name VARCHAR(100) NOT NULL,
 	username VARCHAR(30) NOT NULL,
 	trip_id INTEGER NOT NULL,
+	cost DOUBLE PRECISION NOT NULL,
 
-	FOREIGN KEY(trip_id) REFERENCES trip(trip_id)
+	FOREIGN KEY (trip_id) REFERENCES trip(trip_id)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
 
-	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name)
+	FOREIGN KEY (attraction_name) REFERENCES attraction(attraction_name)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
 
-	FOREIGN KEY(username) REFERENCES user(username)
+	FOREIGN KEY (username) REFERENCES user(username)
 		ON DELETE CASCADE
-);
-
-
-DROP TABLE IF EXISTS price;
-CREATE TABLE IF NOT EXISTS price (
-
-	cost DOUBLE PRECISION,
-	min_age INTEGER,
-	max_age INTEGER,
-	group_size INTEGER,
-	is_student BOOLEAN,
-	attraction_name VARCHAR(100) NOT NULL,
-
-	PRIMARY KEY(attraction_name, cost),
-
-	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE
 );
 
 
@@ -134,9 +116,9 @@ CREATE TABLE IF NOT EXISTS hour (
 	hour_end_time TIME,
 	day VARCHAR(10),
 
-	PRIMARY KEY(attraction_name, hour_start_time, hour_end_time, day),
+	PRIMARY KEY (attraction_name, hour_start_time, hour_end_time, day),
 
-	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name)
+	FOREIGN KEY (attraction_name) REFERENCES attraction(attraction_name)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
@@ -148,10 +130,10 @@ CREATE TABLE IF NOT EXISTS timeslot (
 	timeslot_id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	timeslot_start_time TIME,
 	timeslot_end_time TIME,
-	num_people INTEGER,
+	timeslot_num_people INTEGER,
 	attraction_name VARCHAR(100),
 
-	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name)
+	FOREIGN KEY (attraction_name) REFERENCES attraction(attraction_name)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
@@ -180,7 +162,31 @@ DROP TABLE IF EXISTS reserves;
 CREATE TABLE IF NOT EXISTS reserves (
 
 	reservation_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-	num_people INTEGER NOT NULL,
-	reserves_start_time TIME NOT NULL,
-	reserves_end_time TIME
+	reserves_num_people INTEGER NOT NULL,
+	timeslot_id INTEGER,
+	username VARCHAR(30) NOT NULL,
+
+	FOREIGN KEY (username) REFERENCES user(username)
+		ON DELETE CASCADE,
+
+	FOREIGN KEY (timeslot_id) REFERENCES timeslot(timeslot_id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+);
+
+
+DROP TABLE IF EXISTS user_attraction;
+CREATE TABLE IF NOT EXISTS user_attraction (
+
+	username VARCHAR(30) NOT NULL,
+	attraction_name VARCHAR(100) NOT NULL,
+
+	PRIMARY KEY(username, attraction_name),
+
+	FOREIGN KEY (username) REFERENCES user(username)
+		ON DELETE CASCADE,
+
+	FOREIGN KEY (attraction_name) REFERENCES attraction(attraction_name)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
 );

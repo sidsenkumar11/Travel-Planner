@@ -5,12 +5,14 @@
 
 <div class="row">
 	<div class="col s12">
-		{% if session.is_admin == 0 %}
 		<p class="text-align">
+		{% if not trip_booked_message %}
 			<h2>Welcome, {{ session.name }}.</h2>
 			Click on one of the links at the top to get started!
+			<br /><br /><br />
+		{% endif %}
 		</p>
-		{% else %}
+		{% if session.is_admin == 1 %}
 		<h4>Admin Panel</h4>
 		<h3 class="center-align">Manage Users</h3>
 		<table class="responsive-table centered">
@@ -75,6 +77,40 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		{% endif %}
+		{% if trip_booked_message %}
+		<h4 style="color:green">{{ trip_booked_message }}</h4>
+		{% endif %}
+		{% if no_trip or no_trip_error %}
+			<hr />
+		{% endif %}
+			{% if no_trip_error %}
+			<h4 style="color:red">{{ no_trip_error }}</h4>
+			{% endif %}
+			{% if no_trip %}
+			<h4>{{ no_trip }}</h4>
+			{% endif %}
+		{% if no_trip or no_trip_error %}
+            <form method="post" name="new-trip" action="/new-trip">
+                <div class="row">
+                    <div class="col s6">
+                        <div class="input-field">
+                        	<p>Start Date</p>
+                            <input name="start_date" placeholder='YYYY-MM-DD' type="text" class="validate">
+                        </div>
+                        <div class="input-field">
+                        	<p>End Date</p>
+                            <input name="end_date" placeholder='YYYY-MM-DD' type="text" class="validate">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m12 l12">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Submit<i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                </div>
+            </form>
 		{% endif %}
 	</div>
 </div>

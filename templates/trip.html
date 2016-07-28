@@ -13,35 +13,28 @@
 		<table class="responsive-table centered">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Address</th>
-					<th>Description</th>
-					<th>Hours of Operation</th>
-					<th>Nearest Public Transport</th>
+					<th>Date</th>
 					<th>Time</th>
+					<th>Name</th>
 					<th>Price</th>
-					<th>Remove from My Trip</th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for item in items %}
 				<tr>
+					<td>{{ item.date }}</td>
+					<td></td>
 					<td>{{ item.name }}</td>
-					<td>{{ item.address }}</td>
-					<td>{{ item.description }}</td>
-					<td>{{ item.hours }}</td>
-					<td>{{ item.nearest_transport }}</td>
-					<td>{{ item.time_slots }}</td>
 					<td>{{ item.price }}</td>
-					<td><a class="waves-effect waves-light btn" href="remove-from-trip/{{ loop.index }}">Remove</a></td>
+					<td><a class="waves-effect waves-light btn" href="/remove-from-trip/{{ loop.index }}">Remove</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>
 		</table>
 		<hr/>
 		<h5>Total Cost:</h5>
-		<p style="color: green">${{ total_cost }}</p>
-		<a class="waves-effect waves-light btn" href="/complete">Pay / Complete Reservations</a>
+		<p style="color: green">{{ total_cost }}</p>
+		<a class="waves-effect waves-light btn" href="/complete">Complete Trip</a>
 	</div>
 </div>
 {% endblock %}

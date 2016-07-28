@@ -4,17 +4,31 @@ from wtforms import StringField
 from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired
 import hashlib
+import locale
 import pymysql
 import time
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8ffe05624dfe0efdf7c7f67288d4f4ce5005e0dfb6a1bc48366ef9906dd0586e'
+locale.setlocale( locale.LC_ALL, 'en_CA.UTF-8') # To get money formatting
 
 #####################################################################
 #                          SQL Queries                              #
 #####################################################################
 def view_completed_attractions_query():
-	 return "select activity_date, attraction.attraction_name, description from activity natural join attraction where activity.username = '" + session['username'] + "' and ((activity_date = CURDATE() and end_time <= CURTIME()) or activity_date < CURDATE());"
+	 return "select activity_date, attraction.attraction_name, description from activity natural join attraction where activity.username = '" + session['username'] + "' and ((activity_date = CURDATE() and activity_end_time <= CURTIME()) or activity_date < CURDATE());"
+
+def get_trip_cost():
+	return "select sum(cost) from activity join trip using (trip_id) where trip_id = " + str(session['current_trip_id']) + ";"
+
+def get_all_activities_in_a_trip():
+	return "select activity_date, activity_name, cost from activity natural join trip where username = '" + session['username'] + "' and is_booked = false;";
+
+def get_current_trip_id():
+	return "select trip_id from trip natural join user where trip.is_booked=false and user.username='" + session['username'] + "';"
+
+def add_attraction_to_trip(attraction_name):
+	return ""
 
 #####################################################################
 #                          WTF FORMS                                #
@@ -41,22 +55,7 @@ def home():
 	if 'username' not in session or session['username'] is '':
 		return redirect(url_for('index'))
 
-	# Query database when user is admin for admin panel
-	rows = []
-	if session['is_admin']:
-
-		# Get user table information.
-		cursor = db.cursor()
-		cursor.execute("select * from user;")
-		users = [dict(is_admin="Yes" if row[3] == 1 else "No", username=row[0], password=row[1], first_name=row[4], last_name=row[5], email=row[2], suspended="Yes" if row[7] == 1 else "No") for row in cursor.fetchall()]
-
-		# Get attraction table information.
-		cursor.execute("select * from attraction natural join address;")
-		attractions = [dict(name=row[1], description=row[2], nearest_transport=row[3], 
-			address=(str(row[4]) if row[4] is not None else "") + " " + (row[5] if row[5] is not None else "") + " " + (row[6] if row[6] is not None else "") + ", " + (row[7] if row[7] is not None else "") + " " + (row[8] if row[8] is not None else "") + " " + (row[9] if row[9] is not None else "")) for row in cursor.fetchall()]
-
-		return render_template("home.html", session=session, users=users, attractions=attractions)
-	return render_template("home.html", session=session)
+	return create_trip(no_error=True)
 
 #####################################################################
 #                          ADMIN PANEL                              #
@@ -97,7 +96,7 @@ def make_admin(username):
 	return redirect(url_for('home'))
 
 #####################################################################
-#                        LOGIN / REGISRATION                        #
+#                        LOGIN / REGISTRATION                       #
 #####################################################################
 
 # Login/Registration Page. Redirects to home if already logged in.
@@ -132,7 +131,16 @@ def verify_credentials():
 			session['email'] = rows[0][2]
 			session['is_admin'] = rows[0][3]
 			session['name'] = rows[0][4]
-			session['current_trip_id'] = rows[0][8]
+
+			# Set current trip id for this user.
+			query = get_current_trip_id()
+			cursor.execute(query)
+			trip_ids = cursor.fetchall()
+
+			if len(trip_ids) > 0:
+				# There are trips for this user. If no, just make it when they start adding attractions.
+				session['current_trip_id'] = trip_ids[0][0]
+
 			return redirect(url_for('home'))
 		else:
 			# Suspended user
@@ -194,8 +202,8 @@ def register():
 	cursor.execute("insert into address (street_no, street_name, city, state, country, zip) values ("
 			+ street_no + ", '" + street + "', '" + city + "', '" + state + "', '" + country + "', '" + zipcode + "');")
 
-	cursor.execute("insert into user (username, password, email, is_admin, first_name, last_name, address_id, suspended, current_trip_id) values ('"
-	+ name + "', '" + password1 + "', '" + email + "', false, '" + firstname + "', '" + lastname + "', (select max(address_id) from address), 0, NULL);")
+	cursor.execute("insert into user (username, password, email, is_admin, first_name, last_name, address_id, suspended) values ('"
+	+ name + "', '" + password1 + "', '" + email + "', false, '" + firstname + "', '" + lastname + "', (select max(address_id) from address), 0);")
 	db.commit()
 
 	# Update current user session
@@ -203,6 +211,7 @@ def register():
 	session['name'] = firstname
 	session['is_admin'] = 0
 	session['email'] = email
+
 	return redirect(url_for('home'))
 
 #####################################################################
@@ -306,11 +315,139 @@ def attractions():
 @app.route('/trip')
 def trip():
 
-	# TODO: Write SQL query that gets all the activities in trip completed by this user.
+	# Create a trip if none exists
+	if 'current_trip_id' not in session or not session['current_trip_id']:
+		return create_trip(no_error=False)
+
+	# Get activity info for this trip
 	cursor = db.cursor()
-	cursor.execute("select * from trip;")
-	attractions = [dict(date=row[0], name=row[2], description=row[1]) for row in cursor.fetchall()]
-	return render_template('trip.html', items=attractions, session=session, total_cost=100)
+	query = get_all_activities_in_a_trip()
+	cursor.execute(query)
+	activities = [dict(date=row[0], name=row[1], price=locale.currency(row[2], grouping=True)) for row in cursor.fetchall()] # TODO: Correctly map activity info.
+
+	# Calculate total cost of trip
+	query = get_trip_cost()
+	cursor.execute(query)
+	total_cost = locale.currency(cursor.fetchall()[0][0], grouping=True)
+
+	return render_template('trip.html', items=activities, session=session, total_cost=total_cost)
+
+@app.route('/complete')
+def complete():
+
+	# Create a trip if none exists
+	if 'current_trip_id' not in session or not session['current_trip_id']:
+		return create_trip(no_error=False)
+
+	# Pay if total cost > 0, else update trip_id record to "booked"
+	cursor = db.cursor()
+	query = get_trip_cost()
+	cursor.execute(query)
+	total_cost = cursor.fetchall()[0][0]
+
+	if total_cost > 0:
+		return render_template('payment.html', session=session, total_cost=locale.currency(total_cost, grouping=True))
+	else:
+		return redirect(url_for('trip_booked'))
+
+@app.route('/pay', methods=['POST'])
+def pay():
+
+	# Create a trip if none exists
+	if 'current_trip_id' not in session or not session['current_trip_id']:
+		return create_trip(no_error=False)
+
+	card_number="".join(request.form['card_number'].split('-'))
+	first_name=request.form['first_name']
+	last_name=request.form['last_name']
+	exp_month=request.form['expiration_month']
+	exp_year=request.form['expiration_year']
+
+	# Get Address ID
+	cursor = db.cursor()
+	cursor.execute("select address_id from user where username='" + session['username'] + "';")
+	address_id = cursor.fetchall()[0][0]
+
+	# Insert credit card information
+	query = "insert into creditcard (card_number, username, first_name, last_name, exp_month, exp_year, address_id) values ('" + card_number + "', '" + session['username'] + "', '" + first_name + "', '" + last_name + "', " + str(exp_month) + ", " + str(exp_year) + ", " + str(address_id) + ");"
+
+	return redirect(url_for('trip_booked'))
+
+# Render home page once a trip has been successfully booked.
+# TODO: Return a Trip ID so that a user can view their previous trips
+@app.route('/trip-booked')
+def trip_booked():
+
+	# Create a trip if none exists
+	if 'current_trip_id' not in session or not session['current_trip_id']:
+		return create_trip(no_error=False)
+
+	cursor = db.cursor()
+	cursor.execute("update trip set is_booked=1 where trip_id=" + str(session['current_trip_id']) + ";")
+	db.commit()
+
+	session['current_trip_id'] = False
+	trip_booked_message = "Congratulations! You're all set!"
+
+	# Query database when user is admin for admin panel
+	if session['is_admin']:
+
+		# Get user table information.
+		cursor = db.cursor()
+		cursor.execute("select * from user;")
+		users = [dict(is_admin="Yes" if row[3] == 1 else "No", username=row[0], password=row[1], first_name=row[4], last_name=row[5], email=row[2], suspended="Yes" if row[7] == 1 else "No") for row in cursor.fetchall()]
+
+		# Get attraction table information.
+		cursor.execute("select * from attraction natural join address;")
+		attractions = [dict(name=row[1], description=row[2], nearest_transport=row[3], 
+			address=(str(row[4]) if row[4] is not None else "") + " " + (row[5] if row[5] is not None else "") + " " + (row[6] if row[6] is not None else "") + ", " + (row[7] if row[7] is not None else "") + " " + (row[8] if row[8] is not None else "") + " " + (row[9] if row[9] is not None else "")) for row in cursor.fetchall()]
+
+		return render_template("home.html", session=session, users=users, attractions=attractions, trip_booked_message=trip_booked_message)
+
+	return render_template('home.html', session=session, trip_booked_message=trip_booked_message)
+
+def create_trip(no_error):
+
+	# Query database when user is admin for admin panel
+	if session['is_admin']:
+
+		# Get user table information.
+		cursor = db.cursor()
+		cursor.execute("select * from user;")
+		users = [dict(is_admin="Yes" if row[3] == 1 else "No", username=row[0], password=row[1], first_name=row[4], last_name=row[5], email=row[2], suspended="Yes" if row[7] == 1 else "No") for row in cursor.fetchall()]
+
+		# Get attraction table information.
+		cursor.execute("select * from attraction natural join address;")
+		attractions = [dict(name=row[1], description=row[2], nearest_transport=row[3], 
+			address=(str(row[4]) if row[4] is not None else "") + " " + (row[5] if row[5] is not None else "") + " " + (row[6] if row[6] is not None else "") + ", " + (row[7] if row[7] is not None else "") + " " + (row[8] if row[8] is not None else "") + " " + (row[9] if row[9] is not None else "")) for row in cursor.fetchall()]
+
+		if no_error:
+			return render_template("home.html", session=session, users=users, attractions=attractions, no_trip="Here, you can start making your first trip!")
+		else:
+			return render_template("home.html", session=session, users=users, attractions=attractions, no_trip_error="You must first create a new trip!")
+
+	# Not an admin
+	if no_error:
+		if 'current_trip_id' not in session or not session['current_trip_id']:
+			return render_template("home.html", session=session, no_trip="Here, you can start making your first trip!")
+		return render_template("home.html", session=session)
+	else:
+		return render_template("home.html", session=session, no_trip_error="You must first create a new trip!")
+
+# Create a new current trip id for the user
+@app.route('/new-trip', methods=['POST'])
+def new_trip():
+
+	start_date = request.form['start_date']
+	end_date = request.form['end_date']
+
+	cursor = db.cursor()
+	query = "insert into trip (is_booked, trip_start_date, trip_end_date, username) values (0, '" + start_date + "', '" + end_date + "', '" + session['username'] + "');"
+	cursor.execute(query)
+	db.commit()
+
+	session['current_trip_id'] = get_current_trip_id()
+	return redirect(url_for('home'))
 
 # Add an attraction to My Trip
 @app.route('/add-to-trip/<attraction_index>')
@@ -318,42 +455,24 @@ def add_to_trip(attraction_index):
 
 	# TODO: Check if the attraction_name is on list of attractions
 	# TODO: Check if attraction is already in trip
-	cursor = db.cursor()
+	# Create a trip if none exists
 
-	cursor.execute("select * from trip")
+	if 'current_trip_id' not in session or not session['current_trip_id']:
+		return create_trip(no_error=False)
 
 	# Get attraction information
+	cursor = db.cursor()
 	cursor.execute("select * from attraction;")
-	attractions = [dict(name=row[0]) for row in cursor.fetchall()]
-	attraction_name = attractions[int(attraction_index) - 1]['name']
-
-	cursor.execute("select * from attraction where attraction_name='" + attraction_name + "';")
-	attraction_info = cursor.fetchall()[0]
+	attractions = [dict(attraction_name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
+	attraction_name = attractions[int(attraction_index) - 1]['attraction_name']
 	success = attraction_name + " added to My Trip!"
 
 	# Add attraction to trip
-	trip_id = cursor.execute("select trip.trip_id from trip join ")
-	query = ""
+	query = add_attraction_to_trip(attraction_name)
 	cursor.execute(query)
 	db.commit()
 
-	cursor.execute("select * from attraction")
-	attractions = [dict(attraction_name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
-
 	return render_template('attractions.html', items=attractions, session=session, success=success)
-
-@app.route('/complete')
-def complete():
-
-	# Pay if total cost > 0, else update trip_id record to "booked"
-	cursor = db.cursor()
-	query = ""
-	cursor.execute(query)
-
-	if cost > 0:
-		return render_template('payment.html', session=session)
-	else:
-		return render_template('booked.html', session=session)
 
 #####################################################################
 #                         MAIN APPLICATION                          #

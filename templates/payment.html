@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}Payment | {{session.username}}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col s12">
+		<h2>Trip Confirmation</h2>
+		<h5>Total Cost of Trip: <span style="color: green">{{ total_cost }}</span></h5>
+		<br /><br /><br />
+
+        <form class="col s12" method="post" action="/pay">
+            <div class="row">
+                <h5>Credit Card Information</h5>
+                <div class="row">
+                    <div class="input-field col s4">
+                    	<p>Credit Card Number</p>
+                        <input placeholder="1111-2222-3333-4444" name="card_number" type="text">
+                    </div>
+                    <div class="input-field col s4">
+                    	<p>First Name</p>
+                        <input placeholder="John" name="first_name" type="text">
+                    </div>
+                    <div class="input-field col s4">
+                    	<p>Last Name</p>
+                        <input placeholder="Smith" name="last_name" type="text">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                    	<p>Expiration Month</p>
+                        <input placeholder="04" name="expiration_month" type="number" min="1" max="12">
+                    </div>
+                    <div class="input-field col s6">
+                    	<p>Expiration Year</p>
+                        <input placeholder="17" name="expiration_year" type="number" min="1" max="99">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m12 l12 center-align">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Submit<i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+	</div>
+</div>
+{% endblock %}
