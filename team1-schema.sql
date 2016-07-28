@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS user (
 
 	FOREIGN KEY (address_id) REFERENCES address(address_id)
 		ON DELETE CASCADE
-		ON UPDATE CASCADE,
+		ON UPDATE CASCADE
 );
 
 
@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS timeslot (
 	timeslot_id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	timeslot_start_time TIME,
 	timeslot_end_time TIME,
-	num_people INTEGER,
+	timeslot_num_people INTEGER,
 	attraction_name VARCHAR(100),
 
 	FOREIGN KEY(attraction_name) REFERENCES attraction(attraction_name)
@@ -180,7 +180,14 @@ DROP TABLE IF EXISTS reserves;
 CREATE TABLE IF NOT EXISTS reserves (
 
 	reservation_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-	num_people INTEGER NOT NULL,
-	reserves_start_time TIME NOT NULL,
-	reserves_end_time TIME
+	reserves_num_people INTEGER NOT NULL,
+	timeslot_id INTEGER,
+	username VARCHAR(30) NOT NULL,
+
+	FOREIGN KEY (username) REFERENCES user(username)
+		ON DELETE CASCADE,
+
+	FOREIGN KEY (timeslot_id) REFERENCES timeslot(timeslot_id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
 );
