@@ -41,24 +41,24 @@ INSERT INTO attraction (attraction_name, description, address_id) VALUES ('Engli
 INSERT INTO attraction VALUES ('Munich Residence', "The Munich Residenz is the former royal palace of the Bavarian monarchs of the House of Wittelsbach in the centre of the city of Munich, Germany.", "Odeonsplatz (Subway Station)", 9);
 
 # 3 TRIPS
-INSERT INTO trip (is_booked, start_date, end_date, creditcard_id, username) VALUES (TRUE, '2016-07-30', '2016-08-05', 1, 'soham32');
-INSERT INTO trip (is_booked, start_date, end_date, creditcard_id, username) VALUES (FALSE, '2016-12-15', '2017-01-15', 2, 'siddhi16');
-INSERT INTO trip (is_booked, start_date, end_date, creditcard_id, username) VALUES (TRUE, '2016-05-18', '2016-05-30', 3, 'vooha20');
+INSERT INTO trip (is_booked, trip_start_date, trip_end_date, creditcard_id, username) VALUES (TRUE, '2016-07-30', '2016-08-05', 1, 'soham32');
+INSERT INTO trip (is_booked, trip_start_date, trip_end_date, creditcard_id, username) VALUES (FALSE, '2016-12-15', '2017-01-15', 2, 'siddhi16');
+INSERT INTO trip (is_booked, trip_start_date, trip_end_date, creditcard_id, username) VALUES (TRUE, '2016-05-18', '2016-05-30', 3, 'vooha20');
 
 # 3 ACTIVITES in Paris, France
-INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Climb up Eiffel Tower', '17:10:00', '18:00:00', '2016-07-30', 'Eiffel Tower' ,'soham32', 1);
-INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('See Mona Lisa and other Artwork', '13:00:00', '15:00:00', '2016-07-30', 'Le Louvre', 'soham32', 1);
-INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Guided Tour of Sacre-Coeur Basilica', '15:30:00', '17:30:00', '2016-07-30', 'Sacre-Coeur Basilica', 'soham32', 1);
+INSERT INTO activity (activity_name, activity_start_time, activity_end_time, activity_date, attraction_name, username, trip_id) VALUES ('Climb up Eiffel Tower', '17:10:00', '18:00:00', '2016-07-30', 'Eiffel Tower' ,'soham32', 1);
+INSERT INTO activity (activity_name, activity_start_time, activity_end_time, activity_date, attraction_name, username, trip_id) VALUES ('See Mona Lisa and other Artwork', '13:00:00', '15:00:00', '2016-07-30', 'Le Louvre', 'soham32', 1);
+INSERT INTO activity (activity_name, activity_start_time, activity_end_time, activity_date, attraction_name, username, trip_id) VALUES ('Guided Tour of Sacre-Coeur Basilica', '15:30:00', '17:30:00', '2016-07-30', 'Sacre-Coeur Basilica', 'soham32', 1);
 
 # 3 ACTIVITES in Metz, France
-INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Visit Pompidou Center', '17:10:00', '18:00:00', '2016-12-30', 'Pompidou Center', 'siddhi16', 2);
-INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Visit Metz Cathedral', '13:00:00', '15:00:00', '2016-12-15', 'Metz Cathedral', 'siddhi16', 2);
-INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('See Fireworks', '15:30:00', '17:30:00', '2017-01-01', 'Fort de Queuleu', 'siddhi16', 2);
+INSERT INTO activity (activity_name, activity_start_time, activity_end_time, activity_date, attraction_name, username, trip_id) VALUES ('Visit Pompidou Center', '17:10:00', '18:00:00', '2016-12-30', 'Pompidou Center', 'siddhi16', 2);
+INSERT INTO activity (activity_name, activity_start_time, activity_end_time, activity_date, attraction_name, username, trip_id) VALUES ('Visit Metz Cathedral', '13:00:00', '15:00:00', '2016-12-15', 'Metz Cathedral', 'siddhi16', 2);
+INSERT INTO activity (activity_name, activity_start_time, activity_end_time, activity_date, attraction_name, username, trip_id) VALUES ('See Fireworks', '15:30:00', '17:30:00', '2017-01-01', 'Fort de Queuleu', 'siddhi16', 2);
 
 # 3 ACTIVITES in Munich, Germany
-INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Eat at Viktualienmarkt', '12:00:00', '12:30:00', '2016-05-20', 'Viktualienmarkt', 'vooha20', 3);
-INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Relax at English Garden', '18:00:00', '19:00:00', '2016-05-25', 'English Garden', 'vooha20', 3);
-INSERT INTO activity (activity_name, start_time, end_time, activity_date, attraction_name, username, trip_id) VALUES ('Guided Tour of Munich Residence', '15:30:00', '17:30:00', '2016-05-21', 'Munich Residence', 'vooha20', 3);
+INSERT INTO activity (activity_name, activity_start_time, activity_end_time, activity_date, attraction_name, username, trip_id) VALUES ('Eat at Viktualienmarkt', '12:00:00', '12:30:00', '2016-05-20', 'Viktualienmarkt', 'vooha20', 3);
+INSERT INTO activity (activity_name, activity_start_time, activity_end_time, activity_date, attraction_name, username, trip_id) VALUES ('Relax at English Garden', '18:00:00', '19:00:00', '2016-05-25', 'English Garden', 'vooha20', 3);
+INSERT INTO activity (activity_name, activity_start_time, activity_end_time, activity_date, attraction_name, username, trip_id) VALUES ('Guided Tour of Munich Residence', '15:30:00', '17:30:00', '2016-05-21', 'Munich Residence', 'vooha20', 3);
 
 # PRICES
 INSERT INTO price (cost, min_age, group_size, is_student, attraction_name) VALUES (11, 25, 1, FALSE, 'Eiffel Tower');
@@ -66,13 +66,13 @@ INSERT INTO price VALUES (8.50, 12, 25, 1, FALSE, 'Eiffel Tower');
 INSERT INTO price VALUES (4, 4, 11, 1, FALSE, 'Eiffel Tower');
 INSERT INTO price (cost, group_size, is_student, attraction_name) VALUES (10, 10, FALSE, 'Eiffel Tower');
 INSERT INTO price (cost, group_size, is_student, attraction_name) VALUES (5, 1, TRUE, 'Eiffel Tower');
-INSERT INTO price (cost, max_age, group_size, is_student, attraction_name) VALUES (0, 4, 1, FALSE, 'Eiffel Tower');
+INSERT INTO price (cost, max_age, group_size, is_student, attraction_name) VALUES (2, 4, 1, FALSE, 'Eiffel Tower');
 
 INSERT INTO price (cost, group_size, is_student, attraction_name) VALUES (15, 1, FALSE, 'Le Louvre');
-INSERT INTO price (cost, group_size, is_student, attraction_name) VALUES (0, 1, TRUE, 'Le Louvre');
+INSERT INTO price (cost, group_size, is_student, attraction_name) VALUES (5, 1, TRUE, 'Le Louvre');
 
 INSERT INTO price (cost, group_size, is_student, attraction_name) VALUES (14, 1, FALSE, 'Pompidou Center');
-INSERT INTO price (cost, group_size, is_student, attraction_name) VALUES (11, 1, TRUE, 'Pompidou Center');
+INSERT INTO price (cost, group_size, is_student, attraction_name) VALUES (9, 1, TRUE, 'Pompidou Center');
 
 INSERT INTO price (cost, group_size, is_student, attraction_name) VALUES (7, 1, TRUE, 'Munich Residence');
 INSERT INTO price (cost, group_size, is_student, attraction_name) VALUES (6, 1, TRUE, 'Munich Residence');
@@ -125,10 +125,22 @@ INSERT INTO hour VALUES ('Metz Cathedral', '13:30:00', '17:30:00', 'Saturday');
 INSERT INTO hour VALUES ('Metz Cathedral', '14:00:00', '18:00:00', 'Sunday');
 
 # TIMESLOT
-INSERT INTO timeslot (start_time, end_time, num_people, attraction_name) VALUES ('09:30:00', '11:30:00', 10, 'Sacre-Coeur Basilica');
-INSERT INTO timeslot (start_time, end_time, num_people, attraction_name) VALUES ('11:30:00', '13:30:00', 10, 'Sacre-Coeur Basilica');
-INSERT INTO timeslot (start_time, end_time, num_people, attraction_name) VALUES ('13:30:00', '15:30:00', 10, 'Sacre-Coeur Basilica');
-INSERT INTO timeslot (start_time, end_time, num_people, attraction_name) VALUES ('15:30:00', '17:30:00', 10, 'Sacre-Coeur Basilica');
+INSERT INTO timeslot (timeslot_start_time, timeslot_end_time, timeslot_num_people, attraction_name) VALUES ('09:30:00', '11:30:00', 10, 'Sacre-Coeur Basilica');
+INSERT INTO timeslot (timeslot_start_time, timeslot_end_time, timeslot_num_people, attraction_name) VALUES ('11:30:00', '13:30:00', 10, 'Sacre-Coeur Basilica');
+INSERT INTO timeslot (timeslot_start_time, timeslot_end_time, timeslot_num_people, attraction_name) VALUES ('13:30:00', '15:30:00', 10, 'Sacre-Coeur Basilica');
+INSERT INTO timeslot (timeslot_start_time, timeslot_end_time, timeslot_num_people, attraction_name) VALUES ('15:30:00', '17:30:00', 10, 'Sacre-Coeur Basilica');
+
+# RESERVES
+INSERT INTO reserves (reserves_num_people, timeslot_id, username) VALUES (10, 1, 'vooha20');
+INSERT INTO reserves (reserves_num_people, timeslot_id, username) VALUES (7, 2, 'soham32');
+INSERT INTO reserves (reserves_num_people, timeslot_id, username) VALUES (2, 3, 'siddhi16');
+INSERT INTO reserves (reserves_num_people, timeslot_id, username) VALUES (2, 3, 'vooha20');
+
+# REVIEWS
+INSERT INTO review (title, authored_date, body, username, attraction_name) VALUES ('Beautiful Views', '2015-04-22', "Absolutely loved the Eiffel Tower and its grandeur.", 'vooha20', 'Eiffel Tower');
+INSERT INTO review (title, authored_date, body, username, attraction_name) VALUES ('Awesome Views', '2011-05-22', "Loved the Mona Lisa in the Louvre.", 'vooha20', 'Le Louvre');
+INSERT INTO review (title, authored_date, body, username, attraction_name) VALUES ('Great Views', '2013-03-22', "Loved the Pompidou Center.", 'soham32', 'Pompidou Center');
+INSERT INTO review (title, authored_date, body, username, attraction_name) VALUES ('Wow Views', '2014-02-22', "So great to look at.", 'siddhi16', 'Eiffel Tower');
 
 # ADMIN ACCOUNT
 insert into address (street_no, street_name, city, state, country, zip) values (59, "Windsor Pond Rd.", "Princeton Junction", "NJ", "USA", "08550");
