@@ -1,4 +1,5 @@
 # TEAM1-DATA
+USE team1;
 
 # 12 ADDRESSES
 INSERT INTO address (street_no, street_name, city, country, zip) VALUES (5, "Avenue Anatole", "Paris", "France", "75007");
