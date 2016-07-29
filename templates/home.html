@@ -52,27 +52,83 @@
 		<table class="responsive-table centered">
 			<thead>
 				<tr>
+					<th>Hours</th>
 					<th>Name</th>
-					<th>Address</th>
 					<th>Description</th>
-					<th>Hours of Operation</th>
+					<th>Address</th>
 					<th>Nearest Public Transport</th>
 					<th>Time Slots</th>
-					<th>Price</th>
 					<th>Update Attraction</th>
+					<th>Delete Attraction</th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for item in attractions %}
 				<tr>
+					<td>
+						  <ul class="collapsible" data-collapsible="expandable">
+						    <li>
+						      <div class="collapsible-header">Hours</div>
+						      <div class="collapsible-body">
+						<table>
+							<thead>
+								<tr>
+									<th>Day</th>
+									<th>Start Time</th>
+									<th>End Time</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for hour in item.hours %}
+							<tr>
+								<td>{{ hour.day }}</td>
+								<td>{{ hour.hour_start_time }}</td>
+								<td>{{ hour.hour_end_time }}</td>
+							</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+						</div>
+						    </li>
+						</ul>
+					</td>
 					<td>{{ item.name }}</td>
-					<td>{{ item.address }}</td>
 					<td>{{ item.description }}</td>
-					<td>{{ item.hours }}</td>
+					<td>{{ item.address }}</td>
 					<td>{{ item.nearest_transport }}</td>
-					<td>{{ item.time_slots }}</td>
-					<td>{{ item.price }}</td>
-					<td><a class="waves-effect waves-light btn" href="/upate-attraction/{{ item.name }}">Update</a></td>
+					<td>
+						{% if item.timeslots %}
+						  <ul class="collapsible" data-collapsible="expandable">
+						    <li>
+						      <div class="collapsible-header">Timeslots</div>
+						      <div class="collapsible-body">
+							<table>
+								<thead>
+									<tr>
+									<th>ID</th>
+									<th># Spots</th>
+									<th>Start Time</th>
+									<th>End Time</th>
+									</tr>
+								</thead>
+								<tbody>
+							{% for timeslot in item.timeslots %}
+								<tr>
+									<td>{{ timeslot.id }}</td>
+									<td>{{ timeslot.num_remaining }}</td>
+									<td>{{ timeslot.start_time }}</td>
+									<td>{{ timeslot.end_time }}</td>
+								</tr>
+							{% endfor %}
+								</tbody>
+							</table>
+								</div>
+						    </li>
+						</ul>
+						{% endif %}
+					</td>
+					<td><a class="waves-effect waves-light btn" href="/update-attraction/{{ loop.index }}">Update</a></td>
+					<td><a class="waves-effect waves-light btn" href="/delete-attraction/{{ loop.index }}">Delete</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>

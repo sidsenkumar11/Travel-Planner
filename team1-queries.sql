@@ -1,11 +1,13 @@
+USE team1;
+
 # Given a username or email address, is that user in the database?
-select username, email from user where username = 'soham32' or email = 'sdeval3@gatech.edu';
+select EXISTS(select username, email from user where username = 'soham32' or email = 'sdeval3@gatech.edu') as yes_or_no;
 
 #Given a username or email address, is that user an admin user?
 select is_admin from user where username = 'siddhi16' or email = 'sshah3@gatech.edu';
 
 #Which attractions are open right now in Paris?
-select distinct(attraction_name) from hour natural join address natural join attraction where curtime() between hour_start_time and hour_end_time and city = 'Paris';
+select distinct(attraction_name) from hour natural join attraction natural join address where curtime() between hour_start_time and hour_end_time and city = 'Paris';
 
 #Which attractions in Paris don't require reservations?
 select attraction_name from address natural join attraction where city = 'Paris' and attraction.attraction_name not in (select attraction_name from timeslot);

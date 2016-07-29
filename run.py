@@ -341,7 +341,7 @@ def attractions():
 	return render_template('attractions.html', items=attractions, session=session)
 
 # Receive attraction data to turn into an activity
-@app.route('/add-to-trip/<attraction_index>', methods=['POST', 'GET'])
+@app.route('/add-to-trip/<attraction_index>', methods=['GET'])
 def add_to_trip(attraction_index):
 
 	# TODO: Check if the attraction_name is on list of attractions
@@ -349,11 +349,23 @@ def add_to_trip(attraction_index):
 	if 'current_trip_id' not in session or not session['current_trip_id']:
 		return create_trip(no_error=False)
 
-	# Get attraction name from index.
 	cursor = db.cursor()
+
+	# Check if it was a reserved attraction.
+	if 'is_reserved' in request.form and request.form['is_reserved']:
+
+		# Reserved
+		timeslot_id = request.form['timeslot_id']
+		num_people = request.form['num_people']
+
+		# Update database
+		cursor.execute("insert into reserves (reserves_num_people, timeslot_id, username) values (" + str(num_people) + ", " + str(timeslot_id) + ", '" + session['username'] + "');")
+
+	# Get attraction name from index.
 	cursor.execute("select * from attraction;")
 	attractions = [dict(attraction_name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
 	attraction_name = attractions[int(attraction_index) - 1]['attraction_name']
+	db.commit()
 
 	return render_template('create_activity.html', session=session, attraction_name=attraction_name)
 
@@ -381,6 +393,20 @@ def create_activity():
 	success = attraction_name + " added to My Trip!"
 	attractions = get_attractions_data()
 	return render_template('attractions.html', items=attractions, session=session, success=success)
+
+# Delete an attraction
+@app.route('/delete-attraction/<attraction_index>')
+def delete_attraction(attraction_index):
+
+	# Get attraction_name
+	cursor = db.cursor()
+	cursor.execute("select attraction.attraction_name from attraction natural join address;")
+	attraction_name = cursor.fetchall()[int(attraction_index) - 1][0]
+
+	# Delete from database
+	cursor.execute("delete from attraction where attraction_name='" + attraction_name + "';")
+	db.commit()
+	return redirect(url_for('home'))
 
 #####################################################################
 #                                TRIP                               #
@@ -507,9 +533,7 @@ def create_trip(no_error):
 		users = [dict(is_admin="Yes" if row[3] == 1 else "No", username=row[0], password=row[1], first_name=row[4], last_name=row[5], email=row[2], suspended="Yes" if row[7] == 1 else "No") for row in cursor.fetchall()]
 
 		# Get attraction table information.
-		cursor.execute("select * from attraction natural join address;")
-		attractions = [dict(name=row[1], description=row[2], nearest_transport=row[3], 
-			address=(str(row[4]) if row[4] is not None else "") + " " + (row[5] if row[5] is not None else "") + " " + (row[6] if row[6] is not None else "") + ", " + (row[7] if row[7] is not None else "") + " " + (row[8] if row[8] is not None else "") + " " + (row[9] if row[9] is not None else "")) for row in cursor.fetchall()]
+		attractions = get_attractions_data()
 
 		if no_error:
 			return render_template("home.html", session=session, users=users, attractions=attractions, no_trip="Here, you can start making your first trip!")

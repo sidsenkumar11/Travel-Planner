@@ -106,6 +106,7 @@
 						{% endif %}
 					</td>
 					<td><button class="btn waves-effect waves-light" type="submit" name="action">Add to Trip<i class="material-icons right">send</i></td>
+					<input type="hidden" name="is_reserved" value="{% if item.timeslots %}1{% else %}0{% endif %}">
 					</form>
 				</tr>
 				{% endfor %}
