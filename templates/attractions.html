@@ -5,33 +5,105 @@
 
 <div class="row">
 	<div class="col s12">
-		<h2>Welcome, {{session.name}}.</h2>
+		<h2>View Attractions</h2>
 		<p class="text-align">
-			Planning your next trip? Look no further!
+			Choose areas of interest where you'd like to perform activities.
 		</p>
 		<h4 class="center-align">Attractions</h4>
 		<table class="responsive-table centered">
 			<thead>
 				<tr>
+					<th>Hours</th>
 					<th>Name</th>
-					<th>Address</th>
 					<th>Description</th>
+					<th>Address</th>
 					<th>Nearest Public Transport</th>
-					<th>More Details</th>
 					<th>View Reviews</th>
+					<th>Time Slots</th>
+					<th>Time Slot ID</th>
+					<th>Number of People Desired</th>
 					<th>Add to My Trip</th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for item in items %}
 				<tr>
+					<td>
+						  <ul class="collapsible" data-collapsible="expandable">
+						    <li>
+						      <div class="collapsible-header">Hours</div>
+						      <div class="collapsible-body">
+						<table>
+							<thead>
+								<tr>
+									<th>Day</th>
+									<th>Start Time</th>
+									<th>End Time</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for hour in item.hours %}
+							<tr>
+								<td>{{ hour.day }}</td>
+								<td>{{ hour.hour_start_time }}</td>
+								<td>{{ hour.hour_end_time }}</td>
+							</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+						</div>
+						    </li>
+						</ul>
+					</td>
 					<td>{{ item.name }}</td>
-					<td>{{ item.address }}</td>
 					<td>{{ item.description }}</td>
+					<td>{{ item.address }}</td>
 					<td>{{ item.nearest_transport }}</td>
-					<td><a class="waves-effect waves-light btn" href="/attraction-details/{{ loop.index }}">More Details</a></td>
 					<td><a class="waves-effect waves-light btn" href="/view-reviews/{{ loop.index }}">Reviews</a></td>
-					<td><a class="waves-effect waves-light btn" href="/add-to-trip/{{ loop.index }}">Add</a></td>
+					<td>
+						{% if item.timeslots %}
+						  <ul class="collapsible" data-collapsible="expandable">
+						    <li>
+						      <div class="collapsible-header">Timeslots</div>
+						      <div class="collapsible-body">
+							<table>
+								<thead>
+									<tr>
+									<th>ID</th>
+									<th># Spots</th>
+									<th>Start Time</th>
+									<th>End Time</th>
+									</tr>
+								</thead>
+								<tbody>
+							{% for timeslot in item.timeslots %}
+								<tr>
+									<td>{{ timeslot.id }}</td>
+									<td>{{ timeslot.num_remaining }}</td>
+									<td>{{ timeslot.start_time }}</td>
+									<td>{{ timeslot.end_time }}</td>
+								</tr>
+							{% endfor %}
+								</tbody>
+							</table>
+								</div>
+						    </li>
+						</ul>
+						{% endif %}
+					</td>
+					<form action="/add-to-trip/{{ loop.index }}" method="POST">
+					<td>
+						{% if item.timeslots %}
+						<input name="timeslot_id" type="number" min="1" placeholder="ID">
+						{% endif %}
+					</td>
+					<td>
+						{% if item.timeslots %}
+						<input name="num_people" type="number" min="1" placeholder="# People">
+						{% endif %}
+					</td>
+					<td><button class="btn waves-effect waves-light" type="submit" name="action">Add to Trip<i class="material-icons right">send</i></td>
+					</form>
 				</tr>
 				{% endfor %}
 			</tbody>

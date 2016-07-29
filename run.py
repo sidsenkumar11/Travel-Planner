@@ -305,7 +305,61 @@ def attractions():
 	attractions = [dict(name=row[1], description=row[2], nearest_transport=row[3], 
 		address=(str(row[4]) if row[4] is not None else "") + " " + (row[5] if row[5] is not None else "") + " " + (row[6] if row[6] is not None else "") + ", " + (row[7] if row[7] is not None else "") + " " + (row[8] if row[8] is not None else "") + " " + (row[9] if row[9] is not None else "")) for row in cursor.fetchall()]
 
+	for i in range(0, len(attractions)):
+
+		attraction = attractions[i]
+		attraction_name = attraction['name']
+
+		# Add hours into attractions list
+		cursor.execute("select day, hour_start_time, hour_end_time from hour natural join attraction where attraction.attraction_name='" + attraction_name + "';")
+		hours = [dict(day=row[0], hour_start_time=row[1], hour_end_time=row[2]) for row in cursor.fetchall()]
+		attractions[i]['hours'] = hours
+
+		# Add time slots into attractions list
+
+		# 1) Get remaining spots for a time slot.
+		cursor.execute("select timeslot_num_people - sum(reserves_num_people) from timeslot natural join reserves where timeslot.attraction_name = '" + attraction_name + "' group by timeslot_id;")
+		num_remaining = cursor.fetchall()
+
+		if len(num_remaining) > 0:
+
+			# 2) Get timeslot information.
+			cursor.execute("select timeslot_id, timeslot_start_time, timeslot_end_time, timeslot_num_people from timeslot natural join attraction where attraction.attraction_name='" + attraction_name + "';")
+			timeslots = []
+			rows = cursor.fetchall()
+			for j in range(0, len(num_remaining)):
+				row = rows[j]
+				timeslot = dict(id=row[0], start_time=row[1], end_time=row[2], num_remaining=num_remaining[j][0])
+				timeslots.append(timeslot)
+
+			# 3) Add timeslot information to attractions
+			attractions[i]['timeslots'] = timeslots
 	return render_template('attractions.html', items=attractions, session=session)
+
+# Add an attraction to My Trip
+@app.route('/add-to-trip/<attraction_index>')
+def add_to_trip(attraction_index):
+
+	# TODO: Check if the attraction_name is on list of attractions
+	# TODO: Check if attraction is already in trip
+	# Create a trip if none exists
+
+	if 'current_trip_id' not in session or not session['current_trip_id']:
+		return create_trip(no_error=False)
+
+	# Get attraction information
+	cursor = db.cursor()
+	cursor.execute("select * from attraction;")
+	attractions = [dict(attraction_name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
+	attraction_name = attractions[int(attraction_index) - 1]['attraction_name']
+	success = attraction_name + " added to My Trip!"
+
+	# Add attraction to trip
+	query = add_attraction_to_trip(attraction_name)
+	cursor.execute(query)
+	db.commit()
+
+	return render_template('attractions.html', items=attractions, session=session, success=success)
 
 #####################################################################
 #                                TRIP                               #
@@ -466,31 +520,6 @@ def new_trip():
 	cursor.execute(query)
 	session['current_trip_id'] = cursor.fetchall()[0][0]
 	return redirect(url_for('trip'))
-
-# Add an attraction to My Trip
-@app.route('/add-to-trip/<attraction_index>')
-def add_to_trip(attraction_index):
-
-	# TODO: Check if the attraction_name is on list of attractions
-	# TODO: Check if attraction is already in trip
-	# Create a trip if none exists
-
-	if 'current_trip_id' not in session or not session['current_trip_id']:
-		return create_trip(no_error=False)
-
-	# Get attraction information
-	cursor = db.cursor()
-	cursor.execute("select * from attraction;")
-	attractions = [dict(attraction_name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
-	attraction_name = attractions[int(attraction_index) - 1]['attraction_name']
-	success = attraction_name + " added to My Trip!"
-
-	# Add attraction to trip
-	query = add_attraction_to_trip(attraction_name)
-	cursor.execute(query)
-	db.commit()
-
-	return render_template('attractions.html', items=attractions, session=session, success=success)
 
 #####################################################################
 #                         MAIN APPLICATION                          #
