@@ -31,10 +31,10 @@ select * from review limit 1;
 select * from trip where username = 'soham32';
 
 #For an attraction that requires reservations and already has some reservations for a time slot, how many spots remain for that time slot?
-select timeslot_num_people - sum(reserves_num_people) from timeslot natural join reserves group by timeslot_id;
+select attraction_name, timeslot_id, timeslot_num_people - sum(reserves_num_people) as spots_left from timeslot natural join reserves group by timeslot_id;
 
 #For one of the trips in the database that has two or more paid activities, what is the total cost of the trip?
-select sum(cost) from activity join trip using (trip_id) where trip_id = 1;
+select sum(cost) as total_cost from activity join trip using (trip_id) where trip_id = 1;
 
 #For one of the public transportation locations in your database, which attractions are nearest to that location (list it as the nearest public transportation)?
 select attraction_name from attraction where nearest_transport = 'Palais Royal - Musee du Louvre (Subway Station)';
