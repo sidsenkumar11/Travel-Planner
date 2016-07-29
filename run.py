@@ -22,13 +22,13 @@ def get_trip_cost():
 	return "select sum(cost) from activity join trip using (trip_id) where trip_id = " + str(session['current_trip_id']) + ";"
 
 def get_all_activities_in_a_trip():
-	return "select activity_date, activity_name, cost from activity natural join trip where username = '" + session['username'] + "' and is_booked = false;";
+	return "select activity_date, activity_name, cost, activity_start_time, activity_end_time, activity_id from activity natural join trip where username = '" + session['username'] + "' and is_booked = false;";
 
 def get_current_trip_id():
 	return "select trip_id from trip natural join user where trip.is_booked=false and user.username='" + session['username'] + "';"
 
-def add_attraction_to_trip(attraction_name):
-	return ""
+def add_attraction_to_trip(attraction_name, activity_name, start_time, end_time, date, cost):
+	return "insert into activity (activity_name, activity_start_time, activity_end_time, activity_date, attraction_name, username, trip_id, cost) values ('" + activity_name + "', '" + start_time + "', '" + end_time + "', '" + date + "', '" + attraction_name + "', '" + session['username'] + "', " + str(session['current_trip_id']) + ", " + str(cost) + ");"
 
 #####################################################################
 #                          WTF FORMS                                #
@@ -295,11 +295,8 @@ def create_review():
 #                           ATTRACTIONS                             #
 #####################################################################
 
-# Shows all available attractions.
-@app.route('/attractions')
-def attractions():
+def get_attractions_data():
 
-	# TODO: Add Details button to show hours, time_slots, price.
 	cursor = db.cursor()
 	cursor.execute("select * from attraction natural join address;")
 	attractions = [dict(name=row[1], description=row[2], nearest_transport=row[3], 
@@ -334,31 +331,55 @@ def attractions():
 
 			# 3) Add timeslot information to attractions
 			attractions[i]['timeslots'] = timeslots
+	return attractions
+
+# Shows all available attractions.
+@app.route('/attractions')
+def attractions():
+
+	attractions = get_attractions_data()
 	return render_template('attractions.html', items=attractions, session=session)
 
-# Add an attraction to My Trip
-@app.route('/add-to-trip/<attraction_index>')
+# Receive attraction data to turn into an activity
+@app.route('/add-to-trip/<attraction_index>', methods=['POST', 'GET'])
 def add_to_trip(attraction_index):
 
 	# TODO: Check if the attraction_name is on list of attractions
-	# TODO: Check if attraction is already in trip
-	# Create a trip if none exists
 
 	if 'current_trip_id' not in session or not session['current_trip_id']:
 		return create_trip(no_error=False)
 
-	# Get attraction information
+	# Get attraction name from index.
 	cursor = db.cursor()
 	cursor.execute("select * from attraction;")
 	attractions = [dict(attraction_name=row[0], description=row[1], nearest_transport=row[2]) for row in cursor.fetchall()]
 	attraction_name = attractions[int(attraction_index) - 1]['attraction_name']
-	success = attraction_name + " added to My Trip!"
+
+	return render_template('create_activity.html', session=session, attraction_name=attraction_name)
+
+# Insert activity into database
+@app.route('/create-activity', methods=['POST', 'GET'])
+def create_activity():
+
+	if 'current_trip_id' not in session or not session['current_trip_id']:
+		return create_trip(no_error=False)
+
+	# Get activity field data.
+	attraction_name = request.form['attraction_name']
+	activity_name = request.form['activity_name']
+	start_time = request.form['start_time']
+	end_time = request.form['end_time']
+	date = request.form['date']
+	cost = request.form['cost'][1:]
 
 	# Add attraction to trip
-	query = add_attraction_to_trip(attraction_name)
+	cursor = db.cursor()
+	query = add_attraction_to_trip(attraction_name, activity_name, start_time, end_time, date, cost)
 	cursor.execute(query)
 	db.commit()
 
+	success = attraction_name + " added to My Trip!"
+	attractions = get_attractions_data()
 	return render_template('attractions.html', items=attractions, session=session, success=success)
 
 #####################################################################
@@ -377,7 +398,7 @@ def trip():
 	cursor = db.cursor()
 	query = get_all_activities_in_a_trip()
 	cursor.execute(query)
-	activities = [dict(date=row[0], name=row[1], price=locale.currency(row[2], grouping=True)) for row in cursor.fetchall()] # TODO: Correctly map activity info.
+	activities = [dict(date=row[0], name=row[1], price=locale.currency(row[2], grouping=True), start_time=row[3], end_time=row[4], id=row[5]) for row in cursor.fetchall()] # TODO: Correctly map activity info.
 
 	# Calculate total cost of trip
 	query = get_trip_cost()
@@ -519,6 +540,17 @@ def new_trip():
 	query = get_current_trip_id()
 	cursor.execute(query)
 	session['current_trip_id'] = cursor.fetchall()[0][0]
+	return redirect(url_for('trip'))
+
+# Remove an activity from a trip
+@app.route('/remove-from-trip/<activity_id>')
+def remove_from_trip(activity_id):
+
+	# Find out which activity it is from index.
+	cursor = db.cursor()
+	cursor.execute("delete from activity where activity_id=" + activity_id + ";")
+	db.commit()
+
 	return redirect(url_for('trip'))
 
 #####################################################################

@@ -23,10 +23,10 @@
 				{% for item in items %}
 				<tr>
 					<td>{{ item.date }}</td>
-					<td></td>
+					<td>{{ item.start_time }} - {{ item.end_time }}</td>
 					<td>{{ item.name }}</td>
 					<td>{{ item.price }}</td>
-					<td><a class="waves-effect waves-light btn" href="/remove-from-trip/{{ loop.index }}">Remove</a></td>
+					<td><a class="waves-effect waves-light btn" href="/remove-from-trip/{{ item.id }}">Remove</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>

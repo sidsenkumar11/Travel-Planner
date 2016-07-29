@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}Create Activity | {{session.username}}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col s12">
+		<h3>Create an activity.</h3>
+		<p class="text-align">
+			Review the details of your activity before adding the attraction to your itinerary.
+		</p>
+		<h4 class="center-align">{{ attraction_name }}</h4>
+        <form method="post" action="/create-activity">
+
+			<input type="hidden" name="attraction_name" value="{{ attraction_name }}">
+            <div class="input-field">
+            	<p>Activity Name</p>
+                <input name="activity_name" type="text" class="validate" placeholder="Chilling at {{ attraction_name }}">
+            </div>
+            <div class="row">
+	            <div class="col s3">
+	            	<p>Start Time</p>
+	            	<input name="start_time" type="time" class="validate" placeholder="HH:MM">
+	            </div>
+	            <div class="col s3">
+	            	<p>End Time</p>
+	                <input name="end_time" type="text" class="validate" placeholder="HH:MM">
+	            </div>
+	            <div class="col s3">
+	            	<p>Activity Date</p>
+	                <input name="date" type="date" class="validate" placeholder="YYYY-MM-DD">
+	            </div>
+	            <div class="col s3">
+	            	<p>Cost</p>
+	                <input name="cost" type="text" class="validate" placeholder="$99.99">
+	            </div>
+        	</div>
+        	<div class="center">
+				<button class="btn waves-effect waves-light" type="submit">Create Activity</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

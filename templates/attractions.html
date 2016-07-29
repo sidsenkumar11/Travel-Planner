@@ -9,6 +9,9 @@
 		<p class="text-align">
 			Choose areas of interest where you'd like to perform activities.
 		</p>
+		{% if success %}
+			<h5 style="color:green">{{ success }}</h5>
+		{% endif %}
 		<h4 class="center-align">Attractions</h4>
 		<table class="responsive-table centered">
 			<thead>
