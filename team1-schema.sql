@@ -173,23 +173,3 @@ CREATE TABLE IF NOT EXISTS reserves (
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
-<<<<<<< HEAD
-
-
-DROP TABLE IF EXISTS user_attraction;
-CREATE TABLE IF NOT EXISTS user_attraction (
-
-	username VARCHAR(30) NOT NULL,
-	attraction_name VARCHAR(100) NOT NULL,
-
-	PRIMARY KEY(username, attraction_name),
-
-	FOREIGN KEY (username) REFERENCES user(username)
-		ON DELETE CASCADE,
-
-	FOREIGN KEY (attraction_name) REFERENCES attraction(attraction_name)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE
-);
-=======
->>>>>>> 08d92814feb26a6402054508588e85cbfda1567a

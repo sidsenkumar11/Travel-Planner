@@ -328,7 +328,8 @@ def trip():
 	# Calculate total cost of trip
 	query = get_trip_cost()
 	cursor.execute(query)
-	total_cost = locale.currency(cursor.fetchall()[0][0], grouping=True)
+	amount = cursor.fetchall()[0][0]
+	total_cost = locale.currency(amount, grouping=True) if amount is not None else locale.currency(0, grouping=True)
 
 	return render_template('trip.html', items=activities, session=session, total_cost=total_cost)
 
@@ -345,8 +346,22 @@ def complete():
 	cursor.execute(query)
 	total_cost = cursor.fetchall()[0][0]
 
+	if total_cost is None:
+		total_cost = 0
+
 	if total_cost > 0:
-		return render_template('payment.html', session=session, total_cost=locale.currency(total_cost, grouping=True))
+
+		# Check if a credit card is on file for this user.
+		query = "select creditcard_id from creditcard, user where user.username='" + session['username'] + "' and user.username=creditcard.username;"
+		cursor.execute(query)
+		num_cards = len(cursor.fetchall())
+
+		if num_cards is 0:
+			# No credit card on file
+			return render_template('payment.html', session=session, total_cost=locale.currency(total_cost, grouping=True))
+		else:
+			# Already have a credit card; they're fine.
+			return redirect(url_for('trip_booked'))
 	else:
 		return redirect(url_for('trip_booked'))
 
@@ -429,7 +444,7 @@ def create_trip(no_error):
 	# Not an admin
 	if no_error:
 		if 'current_trip_id' not in session or not session['current_trip_id']:
-			return render_template("home.html", session=session, no_trip="Here, you can start making your first trip!")
+			return render_template("home.html", session=session, no_trip="Here, you can start making a new trip!")
 		return render_template("home.html", session=session)
 	else:
 		return render_template("home.html", session=session, no_trip_error="You must first create a new trip!")
@@ -442,12 +457,15 @@ def new_trip():
 	end_date = request.form['end_date']
 
 	cursor = db.cursor()
-	query = "insert into trip (is_booked, trip_start_date, trip_end_date, username) values (0, '" + start_date + "', '" + end_date + "', '" + session['username'] + "');"
+	query = "insert into trip (is_booked, trip_start_date, trip_end_date, creditcard_id, username) values (0, '" + start_date + "', '" + end_date + "', 1, '" + session['username'] + "');"
 	cursor.execute(query)
 	db.commit()
 
-	session['current_trip_id'] = get_current_trip_id()
-	return redirect(url_for('home'))
+	# Set current trip id for this user.
+	query = get_current_trip_id()
+	cursor.execute(query)
+	session['current_trip_id'] = cursor.fetchall()[0][0]
+	return redirect(url_for('trip'))
 
 # Add an attraction to My Trip
 @app.route('/add-to-trip/<attraction_index>')
